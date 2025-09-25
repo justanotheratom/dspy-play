@@ -42,6 +42,11 @@ This will:
 
 Refer to `library/config/schema.json` for the full config schema (validated automatically).
 
+### Program vs. Config
+
+- **`program.py`** (Python): Define DSPy modules, signatures, and metric functions. This is where you express the logic of your experiment: how the model should behave, custom evaluation functions, and any optional strategy wrappers. Keep it free of environment-specific details (no API keys or dataset paths).
+- **YAML config**: Describe *how* to run the experiment—model/provider selections, optimizer and strategy IDs, dataset location, output directories, and metric wiring. Multiple YAML files can reuse the same `program.py` with different runtime settings.
+
 ## For Contributors
 
 ### Project Layout
