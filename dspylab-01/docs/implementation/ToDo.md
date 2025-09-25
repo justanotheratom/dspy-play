@@ -1,21 +1,47 @@
-# Immediate Tasks
+# Phase 1 · Project Scaffolding
 
-- Schema: Define experiment YAML JSON Schema, publish in repo, generate example config.
-- CLI: Scaffold `dspylab run` command (Typer/argparse), wire to config loader, add help output.
-- Config Engine: Implement parser + matrix expansion using Pydantic models.
-- Program Loader: Build import utilities with unit tests for missing modules/functions.
+- ▶ Schema Foundation
+  - Define experiment YAML JSON Schema covering program module refs, model matrix, metrics.
+  - Publish schema file under `library/config/schema.json` and generate sample config.
+  - Add schema validation unit test (valid + invalid cases).
+- ▶ CLI Skeleton
+  - Scaffold `dspylab run` command (Typer or argparse).
+  - Implement CLI options (`--config`, `--verbose`) and help text.
+  - Wire CLI to schema loader; ensure validation errors surface cleanly.
+- ▶ Config Models
+  - Create Pydantic models mirroring schema for internal use.
+  - Implement matrix expansion utility producing run specs.
+  - Cover edge cases (single/multiple models, default parameters) with tests.
 
-# Near-Term
+# Phase 2 · Runtime Core
 
-- DSPy Integration: Wrap `dspy.configure` with provider registry, ensure LiteLLM settings map correctly.
-- Metrics: Implement built-in latency/TTFT/tokens-per-second metrics; design adapter for custom metrics.
-- Output System: Create raw JSONL writer and aggregate summary manager with schema.
-- Example Program: Provide sample `program.py` showcasing program factory, dataset loader, metric functions.
+- ▶ Program Loader ✅ Completed in commit `feat: add program loader utilities`.
+- ▶ DSPy Integration ✅ Completed in commit `feat: configure dspy runtime with liteLLM settings`.
+- ▶ Execution Engine ✅ Completed in commit `feat: add experiment executor and tests`.
 
-# Testing & Docs
+# Phase 3 · Metrics & Output
 
-- Tests: Add unit tests for config parsing, loader, metrics; integration test for CLI run using mock program/dataset.
-- Documentation: Write README sections (quickstart, config reference) and link to schema.
-- Dev Tooling: Set up CI pipeline (lint, tests) and pre-commit hooks if desired.
+- ▶ Built-in Metrics
+  - Implement latency, time-to-first-token, tokens-per-second collectors.
+  - Design adapter interface for custom metric callables returned by program.
+  - Ensure metric outputs are serializable.
+- ▶ Results Management
+  - Stream per-example outputs to `raw.jsonl` under run directory.
+  - Aggregate metrics across runs; append to `summary.json` at experiment root.
+  - Include config hash, timestamps, and cost estimates in summary entries.
+- ▶ Example Assets
+  - Create sample `program.py` with stub dataset + metrics.
+  - Provide minimal dataset fixture for docs/tests.
+
+# Phase 4 · Quality & Docs
+
+- ▶ Testing Strategy
+  - Add integration test invoking CLI with sample config + mock DSPy.
+  - Cover failure scenarios (bad module ref, missing API key).
+  - Establish CI workflow running lint + tests (GitHub Actions or similar).
+- ▶ Documentation
+  - Expand README with quickstart, config reference, troubleshooting.
+  - Document schema, CLI options, output file formats.
+  - Add roadmap notes (parallelism, dashboards) for future work.
 
 
