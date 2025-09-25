@@ -3,8 +3,16 @@
     "run": "groq_cot_lfs",
     "metrics": {
       "accuracy": 0.0,
-      "latency_avg": 0.6484140947617388
+      "latency_avg": 0.5925902311669017
     },
     "optimizer": "labeledfewshot"
+  },
+  {
+    "run": "groq_cot_bfs",
+    "metrics": {
+      "accuracy": 0.2976190476190476,
+      "latency_avg": 0.45644711851179764
+    },
+    "optimizer": "bootstrapfewshot"
   }
 ]

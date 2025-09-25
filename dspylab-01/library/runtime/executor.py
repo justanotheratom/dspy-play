@@ -177,6 +177,29 @@ class ExperimentExecutor:
             else:
                 raise RuntimeError("Train split examples must be dicts with 'input' and 'output'")
 
+        if optimizer_config.type == "bootstrap_few_shot":
+            try:
+                import dspy  # type: ignore
+
+                extras = getattr(program_instance, "_dspylab_io", None)
+                if not extras:
+                    extras = self._config.program.extras or {}
+
+                input_field = extras.get("input_field")
+                output_field = extras.get("output_field")
+                if not input_field or not output_field:
+                    raise RuntimeError(
+                        "BootstrapFewShot requires program extras to define 'input_field' and 'output_field'"
+                    )
+
+                prepared_trainset = [
+                    dspy.Example(**{input_field: example["input"], output_field: example["output"]})
+                    .with_inputs(input_field)
+                    for example in prepared_trainset
+                ]
+            except Exception as exc:
+                raise RuntimeError(f"Failed to prepare training data for BootstrapFewShot: {exc}") from exc
+
         if hasattr(optimizer, "compile"):
             LOGGER.info("Compiling program using optimizer '%s'", optimizer_config.id)
             compile_sig = inspect.signature(optimizer.compile)

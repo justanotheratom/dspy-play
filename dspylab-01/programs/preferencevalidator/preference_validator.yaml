@@ -5,6 +5,9 @@ program:
   metrics:
     accuracy: compute_accuracy
     per_example_match: per_example_match
+  extras:
+    input_field: preference_request
+    output_field: normalized_action
 models:
   - id: groq-gpt-oss-20b
     provider: groq
@@ -19,10 +22,23 @@ optimizers:
       k: 8
     metrics:
       - per_example_match
+  - id: bootstrapfewshot
+    type: bootstrap_few_shot
+    params:
+      max_bootstrapped_demos: 4
+      max_labeled_demos: 16
+      max_rounds: 1
+    metrics:
+      - accuracy
 matrix:
   - name: groq_cot_lfs
     model: groq-gpt-oss-20b
     optimizer: labeledfewshot
+    metrics:
+      - accuracy
+  - name: groq_cot_bfs
+    model: groq-gpt-oss-20b
+    optimizer: bootstrapfewshot
     metrics:
       - accuracy
 dataset:

@@ -29,10 +29,18 @@ class PreferenceValidatorModule(dspy.Module):
         return {"output": completion.normalized_action}
 
 
-def build_program(chain_module: Optional[dspy.Module] = None) -> PreferenceValidatorModule:
+def build_program(
+    chain_module: Optional[dspy.Module] = None,
+    **extras,
+) -> PreferenceValidatorModule:
     """Return the DSPy chain-of-thought classifier with optional strategy."""
 
-    return PreferenceValidatorModule(chain_module)
+    module = PreferenceValidatorModule(chain_module)
+    module._dspylab_io = {
+        "input_field": extras.get("input_field", "preference_request"),
+        "output_field": extras.get("output_field", "normalized_action"),
+    }
+    return module
 
 
 def compute_accuracy(records: List[Dict[str, object]], examples: List[Dict[str, object]]) -> float:

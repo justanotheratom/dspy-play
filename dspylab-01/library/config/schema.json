@@ -75,7 +75,8 @@
         "module": {"type": "string", "minLength": 1},
         "factory": {"type": "string", "minLength": 1},
         "dataset_loader": {"type": "string", "minLength": 1},
-        "metrics": {"$ref": "#/definitions/stringMap"}
+        "metrics": {"$ref": "#/definitions/stringMap"},
+        "extras": {"$ref": "#/definitions/params"}
       }
     },
     "models": {
