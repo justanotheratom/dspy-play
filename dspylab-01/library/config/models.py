@@ -43,15 +43,8 @@ class MatrixEntry(BaseModel):
 
 class DatasetConfig(BaseModel):
     source: str
-    path: Optional[str] = None
-    name: Optional[str] = None
+    path: str
     split: Dict[str, object] = Field(default_factory=dict)
-
-    @validator("path", always=True)
-    def validate_source(cls, v, values):
-        if not v and not values.get("name"):
-            raise ValueError("dataset must provide 'path' or 'name'")
-        return v
 
 
 class ProgramConfig(BaseModel):

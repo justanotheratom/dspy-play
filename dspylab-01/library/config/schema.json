@@ -72,25 +72,10 @@
       "required": ["module", "factory"],
       "additionalProperties": false,
       "properties": {
-        "module": {
-          "type": "string",
-          "minLength": 1
-        },
-        "factory": {
-          "type": "string",
-          "minLength": 1
-        },
-        "dataset_loader": {
-          "type": "string",
-          "minLength": 1
-        },
-        "metrics": {
-          "$ref": "#/definitions/stringMap"
-        },
-        "extras": {
-          "type": "object",
-          "additionalProperties": true
-        }
+        "module": {"type": "string", "minLength": 1},
+        "factory": {"type": "string", "minLength": 1},
+        "dataset_loader": {"type": "string", "minLength": 1},
+        "metrics": {"$ref": "#/definitions/stringMap"}
       }
     },
     "models": {
@@ -99,43 +84,15 @@
       "items": {
         "type": "object",
         "required": ["id", "provider", "model", "api_key_env"],
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
-          "id": {
-            "$ref": "#/definitions/identifier"
-          },
-          "provider": {
-            "type": "string",
-            "minLength": 1
-          },
-          "model": {
-            "type": "string",
-            "minLength": 1
-          },
-          "base_url": {
-            "type": "string",
-            "minLength": 1
-          },
-          "api_key_env": {
-            "type": "string",
-            "minLength": 1
-          },
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 2
-          },
-          "max_output_tokens": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "pricing": {
-            "$ref": "#/definitions/pricing"
-          },
-          "metadata": {
-            "type": "object",
-            "additionalProperties": true
-          }
+          "id": {"$ref": "#/definitions/identifier"},
+          "provider": {"type": "string", "minLength": 1},
+          "model": {"type": "string", "minLength": 1},
+          "api_key_env": {"type": "string", "minLength": 1},
+          "temperature": {"type": "number", "minimum": 0, "maximum": 2},
+          "max_output_tokens": {"type": "integer", "minimum": 1},
+          "pricing": {"$ref": "#/definitions/pricing"}
         }
       }
     },
@@ -144,21 +101,12 @@
       "items": {
         "type": "object",
         "required": ["id", "type"],
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
-          "id": {
-            "$ref": "#/definitions/identifier"
-          },
-          "type": {
-            "type": "string",
-            "minLength": 1
-          },
-          "params": {
-            "$ref": "#/definitions/params"
-          },
-          "metrics": {
-            "$ref": "#/definitions/metricRefs"
-          }
+          "id": {"$ref": "#/definitions/identifier"},
+          "type": {"type": "string", "minLength": 1},
+          "params": {"$ref": "#/definitions/params"},
+          "metrics": {"$ref": "#/definitions/metricRefs"}
         }
       }
     },
@@ -168,107 +116,46 @@
       "items": {
         "type": "object",
         "required": ["model"],
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
-          "name": {
-            "$ref": "#/definitions/identifier"
-          },
-          "model": {
-            "$ref": "#/definitions/identifier"
-          },
-          "optimizer": {
-            "$ref": "#/definitions/identifier"
-          },
-          "metrics": {
-            "$ref": "#/definitions/metricRefs"
-          },
-          "overrides": {
-            "$ref": "#/definitions/params"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            },
-            "uniqueItems": true
-          }
+          "name": {"$ref": "#/definitions/identifier"},
+          "model": {"$ref": "#/definitions/identifier"},
+          "optimizer": {"$ref": "#/definitions/identifier"},
+          "metrics": {"$ref": "#/definitions/metricRefs"},
+          "overrides": {"$ref": "#/definitions/params"}
         }
       }
     },
-    "dataset": {
-      "type": "object",
-      "required": ["source"],
-      "additionalProperties": true,
+    "dataset": {"type": "object", "required": ["source", "path"], "additionalProperties": false,
       "properties": {
-        "source": {
-          "type": "string",
-          "minLength": 1
-        },
-        "path": {
-          "type": "string",
-          "minLength": 1
-        },
-        "name": {
-          "type": "string",
-          "minLength": 1
-        },
+        "source": {"type": "string", "minLength": 1},
+        "path": {"type": "string", "minLength": 1},
         "split": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "dev_ratio": {
-              "type": "number",
-              "minimum": 0,
-              "maximum": 1
-            },
-            "seed": {
-              "type": "integer"
-            }
+            "dev_ratio": {"type": "number", "minimum": 0, "maximum": 1},
+            "seed": {"type": "integer"}
           }
         }
-      },
-      "oneOf": [
-        {"required": ["path"]},
-        {"required": ["name"]}
-      ]
+      }
     },
     "outputs": {
       "type": "object",
       "required": ["root_dir"],
       "additionalProperties": false,
       "properties": {
-        "root_dir": {
-          "type": "string",
-          "minLength": 1
-        },
-        "raw_filename": {
-          "type": "string",
-          "minLength": 1
-        },
-        "summary_filename": {
-          "type": "string",
-          "minLength": 1
-        }
+        "root_dir": {"type": "string", "minLength": 1},
+        "raw_filename": {"type": "string", "minLength": 1},
+        "summary_filename": {"type": "string", "minLength": 1}
       }
     },
     "logging": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "level": {
-          "type": "string",
-          "enum": ["debug", "info", "warning", "error", "critical"]
-        },
-        "verbose": {
-          "type": "boolean"
-        }
-      }
-    },
-    "environment": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
+        "level": {"type": "string", "enum": ["debug", "info", "warning", "error", "critical"]},
+        "verbose": {"type": "boolean"}
       }
     }
   }
