@@ -9,6 +9,8 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence
 from library.config.models import ExperimentConfig, RunSpec
 from library.program.loader import ProgramBundle
 
+from library.metrics import LatencyTracker, TimedCompletion, compute_latency_metrics
+
 from .dspy_runtime import DSpyUnavailableError, configure_dspy_runtime
 
 
@@ -40,6 +42,7 @@ class ExperimentExecutor:
         self._bundle = bundle
         self._runs = runs
         self._dataset_cache: Optional[Dict[str, Iterable[Any]]] = None
+        self._latency_tracker = LatencyTracker()
 
     def execute(self) -> List[RunOutcome]:
         LOGGER.info("Starting experiment '%s' with %d run(s)", self._config.experiment_name, len(self._runs))
@@ -152,8 +155,20 @@ class ExperimentExecutor:
     def _evaluate_program(self, program, eval_examples: Sequence[Any]) -> List[Dict[str, Any]]:
         records: List[Dict[str, Any]] = []
         for example in eval_examples:
-            output = program(example)
-            records.append({"example": example, "output": output})
+            result = program(example)
+
+            timing = result.get("timing") if isinstance(result, dict) else None
+            if timing:
+                completion = TimedCompletion(
+                    started_at=timing.get("started_at", 0.0),
+                    first_token_at=timing.get("first_token_at", timing.get("started_at", 0.0)),
+                    finished_at=timing.get("finished_at", timing.get("started_at", 0.0)),
+                    prompt_tokens=timing.get("prompt_tokens", 0),
+                    completion_tokens=timing.get("completion_tokens", 0),
+                )
+                self._latency_tracker.extend([completion])
+
+            records.append({"example": example, "output": result})
         return records
 
     def _compute_metrics(self, run: RunSpec, records: List[Dict[str, Any]], eval_examples: Sequence[Any]) -> Dict[str, Any]:
@@ -167,6 +182,8 @@ class ExperimentExecutor:
 
             LOGGER.debug("Calculating metric '%s'", metric_name)
             metrics[metric_name] = metric_fn(records=records, examples=list(eval_examples))
+
+        metrics.update(compute_latency_metrics(self._latency_tracker.captures))
 
         return metrics
 

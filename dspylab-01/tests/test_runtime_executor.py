@@ -15,6 +15,7 @@ from library.config.models import (
     RunSpec,
     StrategyConfig,
 )
+from library.metrics import TimedCompletion
 from library.program.loader import ProgramBundle
 from library.runtime.executor import ExperimentExecutor
 
@@ -70,7 +71,23 @@ class DummyProgram:
 
     def __call__(self, example: Dict[str, Any]) -> Dict[str, Any]:
         self.call_inputs.append(example)
-        return {"prediction": example.get("label", 0)}
+        completion = TimedCompletion(
+            started_at=0.0,
+            first_token_at=0.05,
+            finished_at=0.3,
+            prompt_tokens=10,
+            completion_tokens=5,
+        )
+        return {
+            "prediction": example.get("label", 0),
+            "timing": {
+                "started_at": completion.started_at,
+                "first_token_at": completion.first_token_at,
+                "finished_at": completion.finished_at,
+                "prompt_tokens": completion.prompt_tokens,
+                "completion_tokens": completion.completion_tokens,
+            },
+        }
 
 
 def _fake_program_factory(**kwargs):

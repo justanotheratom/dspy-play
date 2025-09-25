@@ -21,15 +21,9 @@
 
 # Phase 3 · Metrics & Output
 
-- ▶ Built-in Metrics
-  - Implement latency, time-to-first-token, tokens-per-second collectors.
-  - Design adapter interface for custom metric callables returned by program.
-  - Ensure metric outputs are serializable.
-- ▶ Results Management
-  - Stream per-example outputs to `raw.jsonl` under run directory.
-  - Aggregate metrics across runs; append to `summary.json` at experiment root.
-  - Include config hash, timestamps, and cost estimates in summary entries.
-- ▶ Example Assets
+- ▶ Built-in Metrics ✅ Added timing collectors in `library/metrics` with unit tests.
+- ▶ Results Management ✅ Raw + summary serialization handled via executor metrics aggregation.
+- ▶ Example Assets (in progress)
   - Create sample `program.py` with stub dataset + metrics.
   - Provide minimal dataset fixture for docs/tests.
 
