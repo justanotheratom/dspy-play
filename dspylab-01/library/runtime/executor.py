@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, List, Optional, Sequence
 import json
@@ -12,7 +13,7 @@ from pathlib import Path
 from library.config.models import ExperimentConfig, RunSpec
 from library.program.loader import ProgramBundle
 
-from library.metrics import LatencyTracker, TimedCompletion, compute_latency_metrics
+from library.metrics import LatencyTracker, compute_latency_metrics
 
 from .dspy_runtime import DSpyUnavailableError, configure_dspy_runtime
 
@@ -45,7 +46,6 @@ class ExperimentExecutor:
         self._bundle = bundle
         self._runs = runs
         self._dataset_cache: Optional[Dict[str, Iterable[Any]]] = None
-        self._latency_tracker = LatencyTracker()
         self._config_path = config_path or Path.cwd()
 
     def execute(self) -> List[RunOutcome]:
@@ -61,11 +61,13 @@ class ExperimentExecutor:
         outcomes: List[RunOutcome] = []
         for run in self._runs:
             LOGGER.info("→ Run %s using model '%s'", run.name, run.model.id)
+            latency_tracker = LatencyTracker()
             provider_settings = configure_dspy_runtime(run.model)
             program_instance = self._build_program_instance(run)
             compiled_program = self._maybe_optimize(program_instance, run, train_split)
-            records = self._evaluate_program(compiled_program, eval_examples)
-            metrics = self._compute_metrics(run, records, eval_examples)
+            instrumented_program = self._wrap_program_with_latency(compiled_program, latency_tracker)
+            records = self._evaluate_program(instrumented_program, eval_examples)
+            metrics = self._compute_metrics(run, records, eval_examples, latency_tracker)
 
             outcomes.append(
                 RunOutcome(
@@ -220,27 +222,25 @@ class ExperimentExecutor:
 
         raise RuntimeError(f"Optimizer type '{optimizer_type}' not found in dspy")
 
-    def _evaluate_program(self, program, eval_examples: Sequence[Any]) -> List[Dict[str, Any]]:
+    def _evaluate_program(
+        self,
+        program,
+        eval_examples: Sequence[Any],
+    ) -> List[Dict[str, Any]]:
         records: List[Dict[str, Any]] = []
         for example in eval_examples:
             input_value = example["input"] if isinstance(example, dict) and "input" in example else example
             result = program(input_value)
-
-            timing = result.get("timing") if isinstance(result, dict) else None
-            if timing:
-                completion = TimedCompletion(
-                    started_at=timing.get("started_at", 0.0),
-                    first_token_at=timing.get("first_token_at", timing.get("started_at", 0.0)),
-                    finished_at=timing.get("finished_at", timing.get("started_at", 0.0)),
-                    prompt_tokens=timing.get("prompt_tokens", 0),
-                    completion_tokens=timing.get("completion_tokens", 0),
-                )
-                self._latency_tracker.extend([completion])
-
             records.append({"example": example, "output": result})
         return records
 
-    def _compute_metrics(self, run: RunSpec, records: List[Dict[str, Any]], eval_examples: Sequence[Any]) -> Dict[str, Any]:
+    def _compute_metrics(
+        self,
+        run: RunSpec,
+        records: List[Dict[str, Any]],
+        eval_examples: Sequence[Any],
+        latency_tracker: LatencyTracker,
+    ) -> Dict[str, Any]:
         metrics: Dict[str, Any] = {}
         metric_names = self._resolve_metric_names(run)
 
@@ -252,7 +252,7 @@ class ExperimentExecutor:
             LOGGER.debug("Calculating metric '%s'", metric_name)
             metrics[metric_name] = metric_fn(records=records, examples=list(eval_examples))
 
-        metrics.update(compute_latency_metrics(self._latency_tracker.captures))
+        metrics.update(compute_latency_metrics(latency_tracker.captures))
 
         return metrics
 
@@ -262,6 +262,28 @@ class ExperimentExecutor:
         if self._config.program.metrics:
             return list(self._config.program.metrics.keys())
         return []
+
+    def _wrap_program_with_latency(self, program, tracker: LatencyTracker):
+        if program is None or not callable(program):
+            return program
+
+        class LatencyLoggingProgram:
+            def __init__(self, inner):
+                self._inner = inner
+
+            def __call__(self, *args, **kwargs):
+                start = time.perf_counter()
+                try:
+                    return self._inner(*args, **kwargs)
+                finally:
+                    elapsed = time.perf_counter() - start
+                    tracker.capture(latency=elapsed)
+                    LOGGER.debug("Program call latency: %.6f seconds", elapsed)
+
+            def __getattr__(self, item):
+                return getattr(self._inner, item)
+
+        return LatencyLoggingProgram(program)
 
 
 __all__ = ["ExperimentExecutor", "RunOutcome"]

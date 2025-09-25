@@ -13,7 +13,7 @@
 - **Model providers** Support at least OpenAI-compatible APIs via DSPy’s built-in LiteLLM integration. Allow specifying provider name, base URL, API key env var, temperature, max tokens, and cost metadata per model.
 - **Strategies & optimizers** Allow configuring DSPy strategies (chain-of-thought, retry, best-of-n, etc.) and optimizers (Labeled Few-Shot, Bootstrap Few-Shot, GEPA, …) with their parameters. Ensure multiple metrics can be associated with optimizers.
 - **Dataset selection** Allow YAML to reference dataset loaders or file paths. Support dev/test split configuration and seeding for reproducibility.
-- **Metrics** Provide built-in metrics for latency, time to first token, tokens per second, and custom metric callables exported from the program module.
+- **Metrics** Provide built-in latency tracking and support custom metric callables exported from the program module.
 - **Execution lifecycle** For each run: initialize DSPy settings, load program, execute optimizer training (if any) on dev split, evaluate on test split, record per-example and aggregate results.
 - **Output files** Emit raw per-instance results to a run-specific file (JSONL/CSV) and append aggregate metrics for each run to a shared summary file. Include metadata (config hash, timestamps, dataset info).
 - **Logging & progress** Provide structured logging (to stdout and optional file) for config resolution, run progress, and metrics. Support verbose flag.

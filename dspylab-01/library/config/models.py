@@ -23,6 +23,7 @@ class ModelConfig(BaseModel):
     max_output_tokens: Optional[int] = Field(default=None, ge=1)
     pricing: Optional[Pricing] = None
     metadata: Dict[str, str] | None = None
+    cache: bool = True
 
 
 class OptimizerConfig(BaseModel):

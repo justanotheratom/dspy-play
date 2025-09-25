@@ -14,7 +14,6 @@ from library.config.models import (
     ProgramConfig,
     RunSpec,
 )
-from library.metrics import TimedCompletion
 from library.program.loader import ProgramBundle
 from library.runtime.executor import ExperimentExecutor
 
@@ -62,29 +61,9 @@ class DummyProgram:
     def __init__(self):
         self.call_inputs: List[Dict[str, Any]] = []
 
-    def __call__(self, example: Dict[str, Any]) -> Dict[str, Any]:
-        if isinstance(example, dict):
-            input_value = example.get("input")
-        else:
-            input_value = example
-        completion = TimedCompletion(
-            started_at=0.0,
-            first_token_at=0.05,
-            finished_at=0.3,
-            prompt_tokens=10,
-            completion_tokens=5,
-        )
+    def __call__(self, example: Dict[str, Any]):
         return {
-            "output": {
-                "prediction": input_value
-            },
-            "timing": {
-                "started_at": completion.started_at,
-                "first_token_at": completion.first_token_at,
-                "finished_at": completion.finished_at,
-                "prompt_tokens": completion.prompt_tokens,
-                "completion_tokens": completion.completion_tokens,
-            },
+            "output": {"prediction": example if not isinstance(example, dict) else example.get("input")}
         }
 
 
@@ -117,6 +96,12 @@ def _install_fake_dspy(monkeypatch):
             self.model = model
             self.kwargs = kwargs
 
+        def forward(self, *args, **kwargs):
+            return types.SimpleNamespace(
+                usage={"prompt_tokens": 5, "completion_tokens": 7},
+                response_metadata={"time_to_first_token": 0.02},
+            )
+
     class DummyChainOfThought:
         def __init__(self, signature):
             self.signature = signature
@@ -127,8 +112,12 @@ def _install_fake_dspy(monkeypatch):
     fake_dspy.configure = configure
     fake_dspy.LM = DummyLM
     fake_dspy.ChainOfThought = DummyChainOfThought
-    fake_dspy.teleprompt = types.SimpleNamespace(LabeledFewShot=lambda k=None: types.SimpleNamespace(compile=lambda student, trainset: student))
-    fake_dspy.optimize = types.SimpleNamespace(bootstrap_few_shot=lambda **kwargs: types.SimpleNamespace(compile=lambda student, trainset: student))
+    fake_dspy.teleprompt = types.SimpleNamespace(
+        LabeledFewShot=lambda k=None: types.SimpleNamespace(compile=lambda student, trainset: student)
+    )
+    fake_dspy.optimize = types.SimpleNamespace(
+        bootstrap_few_shot=lambda **kwargs: types.SimpleNamespace(compile=lambda student, trainset: student)
+    )
 
     monkeypatch.setitem(sys.modules, "dspy", fake_dspy)
     return fake_dspy
