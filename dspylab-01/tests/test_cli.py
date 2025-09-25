@@ -36,7 +36,6 @@ def _install_fake_dspy(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_dspy.LabeledFewShot = lambda k=None: types.SimpleNamespace(compile=lambda student, trainset: student)
     fake_dspy.teleprompt = types.SimpleNamespace(LabeledFewShot=lambda k=None: types.SimpleNamespace(compile=lambda student, trainset: student))
     fake_dspy.optimize = types.SimpleNamespace(bootstrap_few_shot=lambda **kwargs: types.SimpleNamespace(compile=lambda student, trainset: student))
-    fake_dspy.strategies = types.SimpleNamespace(chain_of_thought=DummyStrategy)
 
     monkeypatch.setitem(sys.modules, "dspy", fake_dspy)
 
@@ -49,7 +48,7 @@ def _prepare_config(tmp_path: Path) -> Path:
     data["program"]["module"] = "tests.fake_program"
     data["program"]["dataset_loader"] = "load_dataset"
     data["outputs"]["root_dir"] = str(tmp_path / "results")
-    config_path.write_text(yaml.safe_dump(data), encoding="utf-8")
+    config_path.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
     return config_path
 
 

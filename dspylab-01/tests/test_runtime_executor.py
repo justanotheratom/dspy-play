@@ -13,7 +13,6 @@ from library.config.models import (
     OutputConfig,
     ProgramConfig,
     RunSpec,
-    StrategyConfig,
 )
 from library.metrics import TimedCompletion
 from library.program.loader import ProgramBundle
@@ -36,9 +35,6 @@ def _build_fake_config() -> ExperimentConfig:
                 api_key_env="OPENAI_API_KEY",
             )
         ],
-        strategies=[
-            StrategyConfig(id="cot", type="chain_of_thought", params={"enabled": True})
-        ],
         optimizers=[
             OptimizerConfig(
                 id="bootstrap",
@@ -48,7 +44,7 @@ def _build_fake_config() -> ExperimentConfig:
             )
         ],
         matrix=[
-            MatrixEntry(name="baseline", model="model-a", optimizer="bootstrap", strategy="cot")
+            MatrixEntry(name="baseline", model="model-a", optimizer="bootstrap")
         ],
         dataset=DatasetConfig(source="local", path="data/dev.jsonl", split={"dev_ratio": 0.2}),
         outputs=OutputConfig(root_dir="results/demo"),
@@ -134,7 +130,6 @@ def _install_fake_dspy(monkeypatch):
     fake_dspy.ChainOfThought = DummyChainOfThought
     fake_dspy.teleprompt = types.SimpleNamespace(LabeledFewShot=lambda k=None: types.SimpleNamespace(compile=lambda student, trainset: student))
     fake_dspy.optimize = types.SimpleNamespace(bootstrap_few_shot=lambda **kwargs: types.SimpleNamespace(compile=lambda student, trainset: student))
-    fake_dspy.strategies = types.SimpleNamespace(chain_of_thought=DummyStrategy)
 
     monkeypatch.setitem(sys.modules, "dspy", fake_dspy)
     return fake_dspy
@@ -147,7 +142,6 @@ def test_executor_runs_matrix_with_optimizer(monkeypatch):
             name="baseline",
             model=config.models[0],
             optimizer=config.optimizers[0],
-            strategy=config.strategies[0],
             metrics=["accuracy"],
             overrides={},
         )
@@ -180,7 +174,6 @@ def test_executor_requires_dataset_split(monkeypatch):
             name="baseline",
             model=config.models[0],
             optimizer=None,
-            strategy=None,
             metrics=[],
             overrides={},
         )

@@ -87,13 +87,6 @@ def dump_example_config(path: Path) -> None:
                 }
             }
         ],
-        "strategies": [
-            {
-                "id": "cot",
-                "type": "chain_of_thought",
-                "params": {"enabled": True}
-            }
-        ],
         "optimizers": [
             {
                 "id": "bootstrap",
@@ -105,8 +98,7 @@ def dump_example_config(path: Path) -> None:
             {
                 "name": "baseline",
                 "model": "gpt4o",
-                "optimizer": "bootstrap",
-                "strategy": "cot"
+                "optimizer": "bootstrap"
             }
         ],
         "dataset": {

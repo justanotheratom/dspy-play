@@ -139,26 +139,6 @@
         }
       }
     },
-    "strategies": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["id", "type"],
-        "additionalProperties": true,
-        "properties": {
-          "id": {
-            "$ref": "#/definitions/identifier"
-          },
-          "type": {
-            "type": "string",
-            "minLength": 1
-          },
-          "params": {
-            "$ref": "#/definitions/params"
-          }
-        }
-      }
-    },
     "optimizers": {
       "type": "array",
       "items": {
@@ -197,9 +177,6 @@
             "$ref": "#/definitions/identifier"
           },
           "optimizer": {
-            "$ref": "#/definitions/identifier"
-          },
-          "strategy": {
             "$ref": "#/definitions/identifier"
           },
           "metrics": {

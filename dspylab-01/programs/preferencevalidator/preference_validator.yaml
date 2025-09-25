@@ -11,11 +11,6 @@ models:
     model: groq/openai/gpt-oss-20b
     api_key_env: GROQ_API_KEY
     temperature: 0.2
-strategies:
-  - id: chainofthought
-    type: chain_of_thought
-    params:
-      enabled: true
 optimizers:
   - id: labeledfewshot
     type: labeled_few_shot
@@ -27,7 +22,6 @@ matrix:
   - name: groq_cot_lfs
     model: groq-gpt-oss-20b
     optimizer: labeledfewshot
-    strategy: chainofthought
     metrics:
       - accuracy
 dataset:

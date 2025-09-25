@@ -28,7 +28,6 @@ class RunOutcome:
     metrics: Dict[str, Any]
     records: List[Dict[str, Any]]
     optimizer_id: Optional[str] = None
-    strategy_id: Optional[str] = None
     provider_settings: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -74,7 +73,6 @@ class ExperimentExecutor:
                     metrics=metrics,
                     records=records,
                     optimizer_id=run.optimizer.id if run.optimizer else None,
-                    strategy_id=run.strategy.id if run.strategy else None,
                     provider_settings=provider_settings,
                 )
             )
@@ -156,11 +154,6 @@ class ExperimentExecutor:
     def _build_program_instance(self, run: RunSpec):
         factory_kwargs: Dict[str, Any] = dict(self._config.program.extras or {})
         factory_kwargs.update(run.overrides or {})
-
-        strategy_module = None
-        if run.strategy:
-            strategy_module = self._instantiate_strategy(run.strategy)
-            factory_kwargs["chain_module"] = strategy_module
 
         LOGGER.debug("Instantiating program with kwargs: %s", factory_kwargs)
         return self._bundle.factory(**factory_kwargs)
@@ -269,34 +262,6 @@ class ExperimentExecutor:
         if self._config.program.metrics:
             return list(self._config.program.metrics.keys())
         return []
-
-    def _instantiate_strategy(self, strategy_config) -> Any:
-        try:
-            import dspy  # type: ignore
-        except ImportError as exc:  # pragma: no cover - exercised in runtime tests
-            raise DSpyUnavailableError("DSPy library is required for strategies") from exc
-
-        strategies_module = getattr(dspy, "strategies", None)
-        params = strategy_config.params or {}
-
-        if strategies_module and hasattr(strategies_module, strategy_config.type):
-            strategy_cls = getattr(strategies_module, strategy_config.type)
-            try:
-                return strategy_cls(**params)
-            except TypeError:
-                return strategy_cls
-
-        strategy_cls = getattr(dspy, strategy_config.type, None)
-        if strategy_cls:
-            try:
-                return strategy_cls(**params)
-            except TypeError:
-                return strategy_cls
-
-        def passthrough(module):  # type: ignore
-            return module
-
-        return passthrough
 
 
 __all__ = ["ExperimentExecutor", "RunOutcome"]

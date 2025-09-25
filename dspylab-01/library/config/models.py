@@ -25,12 +25,6 @@ class ModelConfig(BaseModel):
     metadata: Dict[str, str] | None = None
 
 
-class StrategyConfig(BaseModel):
-    id: str
-    type: str
-    params: Dict[str, object] = Field(default_factory=dict)
-
-
 class OptimizerConfig(BaseModel):
     id: str
     type: str
@@ -42,7 +36,6 @@ class MatrixEntry(BaseModel):
     name: Optional[str] = None
     model: str
     optimizer: Optional[str] = None
-    strategy: Optional[str] = None
     metrics: List[str] | None = None
     overrides: Dict[str, object] = Field(default_factory=dict)
     tags: List[str] | None = None
@@ -67,7 +60,6 @@ class ProgramConfig(BaseModel):
     dataset_loader: Optional[str] = None
     metrics: Dict[str, str] | None = None
     extras: Dict[str, object] = Field(default_factory=dict)
-    strategy: Optional[str] = None
 
 
 class OutputConfig(BaseModel):
@@ -87,7 +79,6 @@ class ExperimentConfig(BaseModel):
     tags: List[str] | None = None
     program: ProgramConfig
     models: List[ModelConfig]
-    strategies: List[StrategyConfig] = Field(default_factory=list)
     optimizers: List[OptimizerConfig] = Field(default_factory=list)
     matrix: List[MatrixEntry]
     dataset: DatasetConfig
@@ -101,7 +92,6 @@ class RunSpec:
     name: str
     model: ModelConfig
     optimizer: OptimizerConfig | None
-    strategy: StrategyConfig | None
     metrics: List[str]
     overrides: Dict[str, object]
 
@@ -109,7 +99,6 @@ class RunSpec:
 def expand_matrix(config: ExperimentConfig) -> List[RunSpec]:
     model_map = {m.id: m for m in config.models}
     optimizer_map = {o.id: o for o in config.optimizers}
-    strategy_map = {s.id: s for s in config.strategies}
 
     runs: List[RunSpec] = []
     for idx, entry in enumerate(config.matrix):
@@ -120,12 +109,6 @@ def expand_matrix(config: ExperimentConfig) -> List[RunSpec]:
             if entry.optimizer not in optimizer_map:
                 raise ValueError(f"Matrix entry references unknown optimizer '{entry.optimizer}'")
             optimizer = optimizer_map[entry.optimizer]
-
-        strategy = None
-        if entry.strategy:
-            if entry.strategy not in strategy_map:
-                raise ValueError(f"Matrix entry references unknown strategy '{entry.strategy}'")
-            strategy = strategy_map[entry.strategy]
 
         name = entry.name or f"run_{idx+1}"
 
@@ -138,7 +121,6 @@ def expand_matrix(config: ExperimentConfig) -> List[RunSpec]:
                 name=name,
                 model=model_map[entry.model],
                 optimizer=optimizer,
-                strategy=strategy,
                 metrics=metrics,
                 overrides=entry.overrides or {},
             )

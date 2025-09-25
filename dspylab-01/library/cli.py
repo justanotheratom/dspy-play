@@ -117,7 +117,6 @@ def _write_outputs(config: ExperimentConfig, outcomes):
             "run": outcome.name,
             "metrics": outcome.metrics,
             "optimizer": outcome.optimizer_id,
-            "strategy": outcome.strategy_id,
         })
 
     raw_path.write_text("\n".join(json.dumps(r) for r in raw_records), encoding="utf-8")
