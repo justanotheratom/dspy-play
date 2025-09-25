@@ -20,9 +20,14 @@ def configure_dspy_runtime(model_config: ModelConfig) -> Dict[str, object]:
 
     provider_settings = _build_provider_settings(model_config)
 
+    lm_class = getattr(dspy, "LM", None)
+    if lm_class is None:
+        raise DSpyUnavailableError("dspy.LM class is unavailable; please upgrade DSPy")
+
+    lm_instance = lm_class(model_config.model, **provider_settings)
+
     dspy.configure(
-        model=model_config.model,
-        model_config=provider_settings,
+        lm=lm_instance,
     )
     return provider_settings
 

@@ -1,0 +1,13 @@
+[
+  {
+    "run": "groq_cot_lfs",
+    "metrics": {
+      "accuracy": 0.0,
+      "latency_avg": 0.0,
+      "ttft_avg": 0.0,
+      "tokens_per_second_avg": 0.0
+    },
+    "optimizer": "labeledfewshot",
+    "strategy": "chainofthought"
+  }
+]

@@ -1,0 +1,424 @@
+{"input": "Avoid seed oils", "output": "report_success(\"Avoid **seed oils**\")"}
+{"input": "Asthma", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "Leggero", "output": "report_success(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "No soybean oil", "output": "report_success(\"No **soybean oil**\")"}
+{"input": "More protein", "output": "report_failure(\"I don't understand nutrition information yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Rico en antioxidantes", "output": "report_success(\"**rich in antioxidants**\")"}
+{"input": "No artificial preservatives", "output": "report_success(\"No artificial **preservatives**\")"}
+{"input": "No palm oil", "output": "report_success(\"No **palm oil**\")"}
+{"input": "no milk products", "output": "report_success(\"no **milk products**\")"}
+{"input": "Magnesium", "output": "report_failure(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "Avoid all processed meats and nitrites", "output": "report_success(\"Avoid all **processed meats** and **nitrites**\")"}
+{"input": "Tell me what you want to do with it and I\u2019ll do it for you and I\u2019ll do it with you and I\u2019ll do it all over again and then I\u2019ll do it again and then", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "I avoid vitamin c44", "output": "report_failure(\"I don't understand this. Please be more specific.\")"}
+{"input": "Sem glúten", "output": "report_success(\"**no gluten**\")"}
+{"input": "no coconuts in my life", "output": "report_success(\"no **coconuts** in my life\")"}
+{"input": "No animal products. Milk and eggs are ok though", "output": "report_success(\"No **animal products**. **Milk** and **eggs** are ok though\")"}
+{"input": "avoid peanuts", "output": "report_success(\"avoid **peanuts**\")"}
+{"input": "I prefer to eat healthy and protein", "output": "report_success(\"I prefer to eat healthy and protein\")"}
+{"input": "Corn oil", "output": "report_success(\"**Corn oil**\")"}
+{"input": "I am not allowed to eat onion or garlic for religious reasons", "output": "report_success(\"I am not allowed to eat **onion** or **garlic** for religious reasons\")"}
+{"input": "Less then 1 mg of sodium", "output": "report_failure(\"I cannot flag ingredients based on quantity yet.\")"}
+{"input": "avoid meda", "output": "report_success(\"Avoid **maida**.\")"}
+{"input": "No shellfish due to allergies", "output": "report_success(\"No **shellfish** due to allergies\")"}
+{"input": "i like sugar", "output": "report_success(\"i like **sugar**\")"}
+{"input": "Diabetic - avoiding high glycemic foods", "output": "report_success(\"Diabetic - avoiding high glycemic foods\")"}
+{"input": "Alto en proteínas", "output": "report_success(\"**high in proteins**\")"}
+{"input": "I do not like mushrooms", "output": "report_success(\"I do not like **mushrooms**\")"}
+{"input": "Nothing shaped as triangles", "output": "report_success(\"Nothing shaped as **triangles**\")"}
+{"input": "No Hydrogenated oil", "output": "report_success(\"No **Hydrogenated oil**\")"}
+{"input": "I need healthy food", "output": "report_success(\"I need healthy food.\")"}
+{"input": "High in protein", "output": "report_success(\"High in **protein**\")"}
+{"input": "I avoid fat", "output": "report_success(\"I avoid **fat**\")"}
+{"input": "A basso contenuto di grassi", "output": "report_success(\"**low in fat**\")"}
+{"input": "Dr Berg said avoid maltodextrin because its glycemic index is too high", "output": "report_success(\"Dr Berg said avoid **maltodextrin** because its glycemic index is too high\")"}
+{"input": "Bobby said avoid natural flavors and natural essence", "output": "report_success(\"Bobby said avoid **natural flavors** and **natural essence**\")"}
+{"input": "like onion", "output": "report_success(\"like **onion**\")"}
+{"input": "Avoid milk", "output": "report_success(\"Avoid **milk**\")"}
+{"input": "No coconut", "output": "report_success(\"No **coconut**\")"}
+{"input": "I like big chicken butts", "output": "report_failure(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "Jsjssbs", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "No seeds", "output": "report_success(\"No **seeds**\")"}
+{"input": "Senza zucchero", "output": "report_success(\"**no sugar**\")"}
+{"input": "Garlic", "output": "report_failure(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "No Artificial sweeteners", "output": "report_success(\"No **Artificial sweeteners**\")"}
+{"input": "avoid sugar", "output": "report_success(\"avoid **sugar**\")"}
+{"input": "no seed oil", "output": "report_success(\"no **seed oil**\")"}
+{"input": "More in Magnesium", "output": "report_failure(\"More in **Magnesium**\")"}
+{"input": "I want low sugar", "output": "report_failure(\"I don't understand nutrition information yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "No palm oil for environmental reasons", "output": "report_success(\"No **palm oil** for environmental reasons\")"}
+{"input": "Avoid dairy products", "output": "report_success(\"Avoid **dairy products**\")"}
+{"input": "Vegetarian but fish and eggs and dairy ok", "output": "report_success(\"**Vegetarian** but **fish** and **eggs** and **dairy** ok\")"}
+{"input": "eat meat", "output": "report_success(\"eat **meat**\")"}
+{"input": "I have a severe tree nut allergy", "output": "report_success(\"I have a severe **tree nut** allergy\")"}
+{"input": "Only foods with low sodium", "output": "report_success(\"Only foods with **low sodium**\")"}
+{"input": "vitamin b2", "output": "report_success(\"**Vitamin b2**\")"}
+{"input": "Sarika", "output": "report_failure(\"This does not look like a dietary preference. Please provide a dietary preference.\")"}
+{"input": "I avoid gluten", "output": "report_success(\"I avoid **gluten**\")"}
+{"input": "I am vegan", "output": "report_success(\"I am **vegan**\")"}
+{"input": "Sarika oil", "output": "report_success(\"**Sarika oil**\")"}
+{"input": "No beef, pork or animal products", "output": "report_success(\"No **beef, pork** or **animal products**\")"}
+{"input": "I eat onions", "output": "report_success(\"I eat **onions**\")"}
+{"input": "Sem gordura trans", "output": "report_success(\"**no trans fat**\")"}
+{"input": "I eat", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "Rice is high in arsenic, so always go for organic rice", "output": "report_success(\"**Rice** is high in **arsenic**, so always go for organic **rice**\")"}
+{"input": "I Do not like pine nuts", "output": "report_success(\"I Do not like **pine nuts**\")"}
+{"input": "Fuente de fibra", "output": "report_success(\"**source of fiber**\")"}
+{"input": "Fonte de ômega-3", "output": "report_success(\"**source of omega-3**\")"}
+{"input": "Avoid wheat", "output": "report_success(\"Avoid **wheat**\")"}
+{"input": "I prefer to eat protein food and healthy fat food", "output": "report_success(\"I prefer to eat **protein food** and **healthy fat food** \")"}
+{"input": "I love Chinese food", "output": "report_success(\"I love Chinese food.\")"}
+{"input": "Limiting in artificial dyes", "output": "report_success(\"Limiting **artificial dyes**\")"}
+{"input": "Avoid peanut", "output": "report_success(\"Avoid **peanut**\")"}
+{"input": "no licorice", "output": "report_success(\"no **licorice**\")"}
+{"input": "Cncncnc", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "Lemongrass", "output": "report_failure(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "xyz123", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "No tree nuts", "output": "report_success(\"No **tree nuts**\")"}
+{"input": "avoid palm oil", "output": "report_success(\"avoid **palm oil**\")"}
+{"input": "Artificial sweeteners", "output": "report_success(\"**Artificial sweeteners**\")"}
+{"input": "Biologico", "output": "report_success(\"**organic**\")"}
+{"input": "No eggs", "output": "report_success(\"No **eggs**\")"}
+{"input": "Baixas calorias", "output": "report_success(\"**low calories**\")"}
+{"input": "I avoid meda and fat food", "output": "report_success(\"I avoid **maida** and **fat** food\")"}
+{"input": "I cannot handle spicy food", "output": "report_success(\"I cannot handle **spicy food**\")"}
+{"input": "No animal products. Milk and Eggs and dairy are ok though", "output": "report_success(\"No **animal products**. **Milk** and **Eggs** and **dairy** are ok though\")"}
+{"input": "Gluten free", "output": "report_success(\"**Gluten free**\")"}
+{"input": "Gluten", "output": "report_failure(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "I avoid maida", "output": "report_success(\"I avoid **maida**\")"}
+{"input": "Only halal certified meat", "output": "report_success(\"Only **halal** certified **meat**\")"}
+{"input": "I can have corn starch but no other form of corn", "output": "report_success(\"I can have **corn starch** but no other form of **corn**\")"}
+{"input": "Only sustainably sourced seafood", "output": "report_success(\"Only sustainably sourced **seafood**\")"}
+{"input": "Natural", "output": "report_failure(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "Do not put too much sugar", "output": "report_success(\"Do not put too much **sugar**\")"}
+{"input": "Alto en energía", "output": "report_success(\"high in **energy**\")"}
+{"input": "Rich in calories", "output": "report_success(\"**rich in calories**\")"}
+{"input": "Baixo teor de gordura", "output": "report_success(\"**low fat content**\")"}
+{"input": "I like big chicken", "output": "report_success(\"I like **big chicken**\")"}
+{"input": "Avoid high fructose corn syrup which is a leading cause of obesity in America", "output": "report_success(\"Avoid **high fructose corn syrup** which is a leading cause of obesity in America\")"}
+{"input": "I am allergic to almost everything", "output": "report_failure(\"This is too broad. Please be more specific.\")"}
+{"input": "No folic acid or cyanocobalmin in my multivitamin", "output": "report_success(\"No **folic acid** or **cyanocobalmin** in my multivitamin\")"}
+{"input": "I avoid maida and palm oil", "output": "report_success(\"I avoid **maida** and **palm oil**\")"}
+{"input": "No cream", "output": "report_success(\"No **cream**\")"}
+{"input": "it should have less than 10% of daily sodium intake", "output": "report_failure(\"I don't understand nutrition information yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Sem lactose", "output": "report_success(\"**no lactose**\")"}
+{"input": "I Do not eat animal products, but milk and eggs are ok", "output": "report_success(\"I Do not eat **animal products**, but **milk** and **eggs** are ok\")"}
+{"input": "Ricco di vitamine", "output": "report_success(\"**rich in vitamins**\")"}
+{"input": "Low sodium for blood pressure", "output": "report_success(\"Low **sodium** for blood pressure\")"}
+{"input": "No corn oil", "output": "report_success(\"No **corn oil**\")"}
+{"input": "Fonte de proteínas", "output": "report_success(\"**source of protein**\")"}
+{"input": "I avoid meda and palm oli", "output": "report_success(\"I avoid **maida** and **palm oil**\")"}
+{"input": "Bisphenol A aka BPA", "output": "report_success(\"**Bisphenol A** aka **BPA**\")"}
+{"input": "Mediterranean diet", "output": "report_success(\"**Mediterranean** diet\")"}
+{"input": "No pink colored items", "output": "report_failure(\"I don't understand colors yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "How many calories in an egg", "output": "report_failure(\"I cannot flag ingredients based on quantity yet.\")"}
+{"input": "it must not have plastic in the container", "output": "report_success(\"it must not have **plastic** in the container\")"}
+{"input": "laejifbgih", "output": "report_failure(\"This doesn't make sense. Please provide a dietary preference.\")"}
+{"input": "I love cane sugar", "output": "report_success(\"I love **cane sugar**\")"}
+{"input": "No vegetable oil", "output": "report_success(\"No **vegetable oil**\")"}
+{"input": "I like food", "output": "report_failure(\"This is too broad. Please be more specific.\")"}
+{"input": "I take fiber food", "output": "report_success(\"I take **fiber** food\")"}
+{"input": "Light", "output": "report_failure(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "Fodmap", "output": "report_failure(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "Fonte di fibre", "output": "report_success(\"**source of fiber**\")"}
+{"input": "Sodium", "output": "report_success(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "I need low sugar", "output": "report_success(\"I need **low sugar**.\")"}
+{"input": "Senza sale aggiunto", "output": "report_success(\"**no added salt**\")"}
+{"input": "Less sugar", "output": "report_success(\"Less **sugar**\")"}
+{"input": "Only grass-fed beef and free-range chicken", "output": "report_success(\"Only **grass-fed beef** and **free-range chicken**\")"}
+{"input": "Oats should be organic", "output": "report_success(\"**Oats** should be **organic**\")"}
+{"input": "I do not want to eat high coloestrol food. I want to avoid high glycemic index foods", "output": "report_success(\"I do not want to eat **high coloestrol** food. I want to avoid **high glycemic index** foods\")"}
+{"input": "Avoid added sugar", "output": "report_success(\"Avoid added **sugar**\")"}
+{"input": "A basso contenuto calorico", "output": "report_success(\"**low in calories**\")"}
+{"input": "No plastic", "output": "report_success(\"No **plastic**\")"}
+{"input": "no high fructose corn syrup", "output": "report_success(\"no **high fructose corn syrup**\")"}
+{"input": "Ricco di proteine", "output": "report_success(\"**rich in proteins**\")"}
+{"input": "sugar added", "output": "report_success(\"**sugar added**\")"}
+{"input": "Mono sodium", "output": "report_success(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "We are avoided to eat maggi made of maida", "output": "report_success(\"We are avoided to eat **maggi** made of **maida**\")"}
+{"input": "No BHA or BHT preservatives", "output": "report_success(\"No **BHA** or **BHT** preservatives\")"}
+{"input": "no milk product", "output": "report_success(\"no **milk product**\")"}
+{"input": "I love yuca", "output": "report_success(\"I love **yuca**\")"}
+{"input": "Less sodium", "output": "report_success(\"Less **sodium**\")"}
+{"input": "Avoid enriched flour and enriched rice. They get rid of natural nutrients and then add back synthetic nutrients.", "output": "report_success(\"Avoid **enriched flour** and **enriched rice**. They get rid of natural nutrients and then add back synthetic nutrients.\")"}
+{"input": "No preservatives", "output": "report_success(\"No **preservatives**\")"}
+{"input": "Avoid fermented foods", "output": "report_success(\"Avoid **fermented** foods\")"}
+{"input": "Baixo teor de sódio", "output": "report_success(\"**low sodium**\")"}
+{"input": "vitamin b5", "output": "report_success(\"vitamin b5\")"}
+{"input": "Low in sodium", "output": "report_success(\"Low in **sodium**\")"}
+{"input": "!!!", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "Rico em potássio", "output": "report_success(\"**rich in potassium**\")"}
+{"input": "No alcohol of any kind", "output": "report_success(\"No **alcohol** of any kind\")"}
+{"input": "Low in trans fat", "output": "report_success(\"Low in **trans fat**\")"}
+{"input": "I avoid vitani c445", "output": "report_success(\"I avoid **vitamin c445**\")"}
+{"input": "Jain food only", "output": "report_success(\"**Jain food** only\")"}
+{"input": "Bajo en azúcar", "output": "report_success(\"**low sugar**\")"}
+{"input": "Kosher dietary laws", "output": "report_success(\"**Kosher** dietary laws\")"}
+{"input": "The only way I could do that was food oil", "output": "report_failure(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "Sin huevo", "output": "report_success(\"no **eggs**\")"}
+{"input": "Sem açúcar", "output": "report_success(\"no **sugar**\")"}
+{"input": "Rich in magnesium", "output": "report_success(\"Rich in **magnesium**\")"}
+{"input": "I like food broccoli", "output": "report_success(\"I like food **broccoli**\")"}
+{"input": "i avoid maida", "output": "report_success(\"i avoid **maida**\")"}
+{"input": "Bisphenol A or BPA", "output": "report_success(\"**Bisphenol A** or **BPA**\")"}
+{"input": "i cannot have peanuts and pine nuts but all other nuts are ok", "output": "report_success(\"i cannot have **peanuts** and **pine nuts** but all other nuts are ok\")"}
+{"input": "No tyramine due to MAO inhibitors", "output": "report_success(\"No **tyramine** due to MAO inhibitors\")"}
+{"input": "No enriched flour", "output": "report_success(\"No **enriched flour**\")"}
+{"input": "Alto en calorías", "output": "report_failure(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "Sem amendoim", "output": "report_success(\"**no peanuts**\")"}
+{"input": "I don't like herbs", "output": "report_success(\"I don't like **herbs**\")"}
+{"input": "Senza lattosio", "output": "report_success(\"**no lactose**\")"}
+{"input": "Plant-based whole foods only", "output": "report_success(\"**Plant-based** whole foods only\")"}
+{"input": "I can eat anything", "output": "report_failure(\"This is too broad. Please be more specific.\")"}
+{"input": "No gluten", "output": "report_success(\"No **gluten**\")"}
+{"input": "Senza conservanti", "output": "report_success(\"**no preservatives**\")"}
+{"input": "No animal products. Eggs and dairy are ok though", "output": "report_success(\"No **animal products**. **Eggs** and **dairy** are ok though\")"}
+{"input": "Soybean oil", "output": "report_failure(\"I don't have the ability to interpret that as a dietary preference. Please provide a dietary preference.\")"}
+{"input": "sfoignsilf", "output": "report_failure(\"This doesn't make sense. Please provide a dietary preference.\")"}
+{"input": "hnosthnsori", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "fjsjfgjg", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "Bajo en sal", "output": "report_success(\"**low salt**\")"}
+{"input": "Vegano", "output": "report_success(\"**vegan**\")"}
+{"input": "Contains vitamin b12", "output": "report_success(\"Contains **vitamin b12**\")"}
+{"input": "Avoid natural flavors as well as artificial flavors", "output": "report_success(\"Avoid **natural flavors** as well as **artificial flavors**\")"}
+{"input": "I avoid unhealthy fat", "output": "report_success(\"I avoid **unhealthy fat**\")"}
+{"input": "I love olives", "output": "report_success(\"I love **olives**\")"}
+{"input": "i avoid food to unheldy fat", "output": "report_failure(\"This is too vague. Please be more specific.\")"}
+{"input": "I cannot eat onion and garlic and turmeric", "output": "report_success(\"I cannot eat **onion** and **garlic** and **turmeric**\")"}
+{"input": "Enriquecido com vitaminas", "output": "report_success(\"**Enriched with vitamins**\")"}
+{"input": "i am allergic to peach", "output": "report_success(\"i am allergic to **peach**\")"}
+{"input": "i avoid vitamin c", "output": "report_success(\"i avoid **vitamin c**\")"}
+{"input": "Artificial flavors and colors", "output": "report_success(\"**Artificial flavors** and **colors**\")"}
+{"input": "Erythritol is linked to increased risk of heart attack and stroke", "output": "report_success(\"**Erythritol** is linked to increased risk of heart attack and stroke\")"}
+{"input": "Ad alto contenuto di calcio", "output": "report_success(\"**high calcium**\")"}
+{"input": "Alto contenuto energetico", "output": "report_success(\"**high energy content**\")"}
+{"input": "gujthjukdtuk", "output": "report_failure(\"This doesn't make sense. Please provide a dietary preference.\")"}
+{"input": "Fish", "output": "report_success(\"**Fish**\")"}
+{"input": "Low in added sugar", "output": "report_success(\"Low in **added sugar**\")"}
+{"input": "Gestational diabetes", "output": "report_failure(\"I don't understand health conditions yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "No coloring", "output": "report_success(\"No **coloring**\")"}
+{"input": "Vegetariano", "output": "report_success(\"**vegetarian**\")"}
+{"input": "Fuente de hierro", "output": "report_success(\"**source of iron**\")"}
+{"input": "I am vegan , but I do eat fish", "output": "report_success(\"I am **vegan**, but I do eat **fish**\")"}
+{"input": "I am allergic to dust mites", "output": "report_failure(\"I don't understand allergens yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "No sunflower seed oil", "output": "report_success(\"No **sunflower seed oil**\")"}
+{"input": "avoid eggs", "output": "report_success(\"avoid **eggs**\")"}
+{"input": "Avoid dairy", "output": "report_success(\"Avoid **dairy**\")"}
+{"input": "eat piizza", "output": "report_failure(\"I don't understand. Please provide a dietary preference.\")"}
+{"input": "Drink milk", "output": "report_success(\"Drink **milk**\")"}
+{"input": "Less than 5 gram of sugar in one serving", "output": "report_failure(\"I cannot flag ingredients based on quantity yet.\")"}
+{"input": "Low in sugar", "output": "report_success(\"Low in **sugar**\")"}
+{"input": "Avoid maltodextrin", "output": "report_success(\"Avoid **maltodextrin**\")"}
+{"input": "I prefer to eat healthy and", "output": "report_failure(\"This is too broad. Please be more specific.\")"}
+{"input": "I Do not eat meat", "output": "report_success(\"I Do not eat **meat**\")"}
+{"input": "est protin", "output": "report_failure(\"I do not understand nutrition information yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Pas de gluten", "output": "report_success(\"No **gluten****\")"}
+{"input": "Aspartame is bad for you", "output": "report_success(\"**Aspartame** is bad for you\")"}
+{"input": "add sugar", "output": "report_success(\"add **sugar**\")"}
+{"input": "i avoid noodles made of maida", "output": "report_success(\"i avoid **noodles** made of  **maida**\")"}
+{"input": "cndncnv", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "I can't have gluten", "output": "report_success(\"I can't have **gluten**\")"}
+{"input": "I eat protein food", "output": "report_success(\"I eat **protein** food\")"}
+{"input": "Following a strict ketogenic diet", "output": "report_success(\"Following a strict **ketogenic** diet\")"}
+{"input": "Seed oils are to be avoided", "output": "report_success(\"**Seed oils** are to be avoided\")"}
+{"input": "fhdjcdjfjv", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "Flag aspartame and high fructose corn syrup.", "output": "report_success(\"Flag **aspartame** and **high fructose corn syrup**.\")"}
+{"input": "Aspartame is a carcinogen. It is also linked to heart attack and stroke.", "output": "report_failure(\"Please provide a dietary preference.\")"}
+{"input": "B vitamins", "output": "report_failure(\"Input is too short\")"}
+{"input": "Avoiding foods with excessive packaging", "output": "report_success(\"Avoiding foods with **excessive packaging**\")"}
+{"input": "I void vigani c5", "output": "report_success(\"I avoid **Vitamin C5**\")"}
+{"input": "Ddhcjcf", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "No cancer", "output": "report_failure(\"This is too broad. Please be more specific.\")"}
+{"input": "Sin lactosa", "output": "report_success(\"**lactose-free**\")"}
+{"input": "No preservative", "output": "report_success(\"No **preservative**\")"}
+{"input": "Under 100 calories", "output": "report_failure(\"I cannot flag ingredients based on quantity yet.\")"}
+{"input": "I hate Vanilla flavor", "output": "report_success(\"I hate **Vanilla flavor**\")"}
+{"input": "Potassium or sodium benzoate", "output": "report_success(\"**Potassium** or **sodium benzoate**\")"}
+{"input": "I avoid Palm oil", "output": "report_success(\"I avoid Palm **oil**\")"}
+{"input": "More magnesium", "output": "report_failure(\"I cannot flag ingredients based on quantity yet\")"}
+{"input": "Low fodmap", "output": "report_success(\"Low **fodmap**\")"}
+{"input": "I dont eat peanut", "output": "report_success(\"I don't eat **peanut**\")"}
+{"input": "I love vanilla flavor", "output": "report_success(\"I love **vanilla flavor**\")"}
+{"input": "fopvuihaf0vu9p", "output": "report_failure(\"This doesn't make sense. Please provide a dietary preference.\")"}
+{"input": "I don't want onions and garlic in my food.", "output": "report_success(\"I don't want **onions** and **garlic** in my food.\")"}
+{"input": "No animal rennet", "output": "report_success(\"No **animal rennet**\")"}
+{"input": "Pescatarian but no farmed fish", "output": "report_success(\"**Pescatarian** but no **farmed fish**\")"}
+{"input": "I am vegetarian", "output": "report_success(\"I am **vegetarian**\")"}
+{"input": "Aspartame is a carcinogen", "output": "report_failure(\"**Please provide dietary preference**\")"}
+{"input": "Avoid enriched flour. They get rid of natural nutrients and then add back synthetic nutrients.", "output": "report_success(\"Avoid **enriched flour**. They get rid of natural nutrients and then add back synthetic nutrients.\")"}
+{"input": "I avoid vitani d4", "output": "report_success(\"I avoid **vitamin d4**\")"}
+{"input": "i drink tea", "output": "report_success(\"I drink **tea**.\")"}
+{"input": "I need food", "output": "report_failure(\"I cannot provide food. Please provide a dietary preference.\")"}
+{"input": "no animal products, but milk and eggs are ok", "output": "report_success(\"no **animal products**, but **milk** and **eggs** are ok\")"}
+{"input": "Vegetable oil", "output": "report_success(\"**Vegetable oil**\")"}
+{"input": "No beans besides soy", "output": "report_success(\"No **beans** besides **soy**\")"}
+{"input": "I avoid vitani d6", "output": "report_success(\"I avoid **vitamin d6**\")"}
+{"input": "Alto valor energético", "output": "report_success(\"**high energy value**\")"}
+{"input": "No food", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "Avoid maltodextrin, according to Dr Berg", "output": "report_success(\"Avoid **maltodextrin**, according to Dr Berg\")"}
+{"input": "I Do not like onions", "output": "report_success(\"I Do not like **onions**\")"}
+{"input": "Senza glutine", "output": "report_success(\"**no gluten**\")"}
+{"input": "Pea protein is acceptable", "output": "report_success(\"**Pea protein** is acceptable\")"}
+{"input": "Avoid soy", "output": "report_success(\"Avoid **soy**\")"}
+{"input": "Senza coloranti", "output": "report_success(\"**no colorants**\")"}
+{"input": "it should have less than 250 mg of sodium", "output": "report_failure(\"I don't understand nutrition information yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "no seafood", "output": "report_success(\"no **seafood**\")"}
+{"input": "eat mutton", "output": "report_success(\"eat **mutton**\")"}
+{"input": "Rico en vitaminas", "output": "report_success(\"**rich in vitamins**\")"}
+{"input": "Rico en calcio", "output": "report_success(\"**rich in calcium**\")"}
+{"input": "I like licorice", "output": "report_success(\"I like **licorice**\")"}
+{"input": "No olives", "output": "report_success(\"No **olives**\")"}
+{"input": "I avoid vitani d8", "output": "report_success(\"I avoid **vitamin d8**\")"}
+{"input": "No added sugar, but honey is ok", "output": "report_success(\"No **added sugar**, but **honey** is ok\")"}
+{"input": "High in potassium", "output": "report_success(\"High in **potassium**\")"}
+{"input": "gelatin no", "output": "report_success(\"**gelatin** no\")"}
+{"input": "Rico em fibras", "output": "report_success(\"**rich in fibers**\")"}
+{"input": "I eat paleo", "output": "report_success(\"I eat **paleo**\")"}
+{"input": "i avoid palm oli", "output": "report_success(\"i avoid **palm oil**\")"}
+{"input": "Senza olii di palma", "output": "report_success(\"**no palm oil**\")"}
+{"input": "Coffee", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "i cannot stand cinnamon", "output": "report_success(\"i cannot stand **cinnamon**\")"}
+{"input": "I don't eat nightshade vegetables", "output": "report_success(\"I don't eat **nightshade vegetables**\")"}
+{"input": "Avoid wheat, dairy, gluten, dairy products, nuts, and soy", "output": "report_success(\"Avoid **wheat**, **dairy**, **gluten**, , **dairy products**, **nuts**, and **soy**\")"}
+{"input": "no sugar added", "output": "report_success(\"no **sugar** added\")"}
+{"input": "I don't want arsenic in my food", "output": "report_success(\"I don't want **arsenic** in my food\")"}
+{"input": "I avoid meda and play oli", "output": "report_success(\"I avoid **maida** and **palm oil**.\")"}
+{"input": "No raw fish or meat", "output": "report_success(\"No raw **fish** or **meat**\")"}
+{"input": "Sodium nitrates", "output": "report_success(\"**Sodium nitrates**\")"}
+{"input": "No animal products", "output": "report_success(\"No **animal products**\")"}
+{"input": "i like onion", "output": "report_success(\"i like **onion**\")"}
+{"input": "Palm oil", "output": "report_failure(\"I don't understand that as a dietary preference. Please provide a valid dietary preference that can be mapped to ingredients.\")"}
+{"input": "No pickled vegetables", "output": "report_success(\"No **pickled vegetables**\")"}
+{"input": "I have allergies of tomato", "output": "report_success(\"I have allergies of **tomato**\")"}
+{"input": "I avoid meds", "output": "report_success(\"I avoid **meds**\")"}
+{"input": "Asthma free", "output": "report_failure(\"I don't understand nutrition benefits yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Ricco di antiossidanti", "output": "report_success(\"**rich in antioxidants**\")"}
+{"input": "No peanuts.", "output": "report_success(\"No **peanuts**.\")"}
+{"input": "No human remains in food", "output": "report_success(\"No **human remains** in food\")"}
+{"input": "I Do not like kale", "output": "report_success(\"I Do not like **kale**\")"}
+{"input": "eat pizza", "output": "report_failure(\"I don't understand. Please provide a dietary preference.\")"}
+{"input": "No meat", "output": "report_success(\"No **meat**\")"}
+{"input": "i am like to eat meat", "output": "report_success(\"i am like to eat **meat**\")"}
+{"input": "Tetuuu", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "No garlic", "output": "report_success(\"No **garlic**\")"}
+{"input": "I love sichuan sauce", "output": "report_success(\"I love **sichuan sauce**\")"}
+{"input": "I cannot have aspartame", "output": "report_success(\"I cannot have **aspartame**\")"}
+{"input": "Vegetarian. These are ok though: dairy, eggs, fish", "output": "report_success(\"Vegetarian. These are ok though: **dairy**, **eggs**, **fish**\")"}
+{"input": "no seed oils or lard", "output": "report_success(\"no **seed oils** or **lard**\")"}
+{"input": "I avoid vitamin a", "output": "report_success(\"I avoid **vitamin a**\")"}
+{"input": "I am a pescatarian", "output": "report_success(\"I am a **pescatarian**\")"}
+{"input": "I can't have bananas", "output": "report_success(\"I can't have **bananas**\")"}
+{"input": "No haram ingredients", "output": "report_success(\"No **haram** ingredients\")"}
+{"input": "Rich in vitamin a", "output": "report_success(\"Rich in **vitamin a**\")"}
+{"input": "I avoid vitamin a2", "output": "report_success(\"I avoid **vitamin a2**\")"}
+{"input": "Only poultry", "output": "report_success(\"Only **poultry**\")"}
+{"input": "I prefer diet coke", "output": "report_success(\"I prefer **diet coke**\")"}
+{"input": "Hydrogenated oil", "output": "report_success(\"**Hydrogenated oil**\")"}
+{"input": "No added sugar", "output": "report_success(\"No added sugar.\")"}
+{"input": "Sucralose can affect gut health and metabolism", "output": "report_success(\"**Sucralose** can affect gut health and metabolism\")"}
+{"input": "Oats should be organic because otherwise they are highly sprayed with glyphosate which is highly toxic", "output": "report_success(\"**Oats** should be **organic** because otherwise they are highly sprayed with **glyphosate** which is highly toxic\")"}
+{"input": "asbdbnx", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "Oil ohms in my area foood healthy food", "output": "report_success(\"**Oil** ohms in my area **foood** **healthy food**\")"}
+{"input": "Bajo en grasa", "output": "report_success(\"**low fat content**\")"}
+{"input": "Eat good", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "Rich in vitamin d", "output": "report_success(\"Rich in **vitamin d**\")"}
+{"input": "Avoid animal products. But eggs and dairy are ok", "output": "report_success(\"Avoid **animal products**. But **eggs** and **dairy** are ok\")"}
+{"input": "Rich in vitamin e", "output": "report_success(\"Rich in **vitamin e**\")"}
+{"input": "Sin frutos secos", "output": "report_success(\"**no nuts**\")"}
+{"input": "Ricco di minerali", "output": "report_success(\"**rich in minerals**\")"}
+{"input": "I like everything", "output": "report_failure(\"This is too broad. Please be more specific.\")"}
+{"input": "Sin colesterol", "output": "report_success(\"**no cholesterol**\")"}
+{"input": "I love licorice", "output": "report_success(\"I love **licorice**\")"}
+{"input": "Enriched wheat", "output": "report_failure(\"I cannot flag ingredients based on this statement\")"}
+{"input": "I need to avoid sesame seeds", "output": "report_success(\"I need to avoid **sesame seeds**\")"}
+{"input": "I'd meggi meda", "output": "report_failure(\"Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Fish1", "output": "report_success(\"**Input is too short**\")"}
+{"input": "No high fructose corn syrups.", "output": "report_success(\"No **high fructose corn syrups**.\")"}
+{"input": "i avoid unhealthy fats", "output": "report_success(\"i avoid **unhealthy fats**\")"}
+{"input": "Want lots of sugar", "output": "report_failure(\"I cannot flag ingredients based on quantity yet.\")"}
+{"input": "Bajo en calorías", "output": "report_success(\"**low calorie**\")"}
+{"input": "No alliums", "output": "report_success(\"No **alliums**\")"}
+{"input": "Low in saturated fat", "output": "report_success(\"Low in **saturated fat**\")"}
+{"input": "No Artificial flavors and colors", "output": "report_success(\"No **Artificial flavors** and **colors**\")"}
+{"input": "fddcfj", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "Dairy", "output": "report_success(\"**Dairy**\")"}
+{"input": "I avoid vitani c4", "output": "report_success(\"I avoid **vitamin c4**\")"}
+{"input": "Rich in vitamin c", "output": "report_success(\"Rich in **vitamin c**\")"}
+{"input": "I prefer almond milk over regular milk", "output": "report_success(\"I prefer **almond milk** over regular milk\")"}
+{"input": "I cannot eat onion and garlic", "output": "report_success(\"I cannot eat **onion** and **garlic**\")"}
+{"input": "No seed oils", "output": "report_success(\"No **seed oils**\")"}
+{"input": "I avoid fatty and acidic food and drinks", "output": "report_success(\"I avoid **fatty** and **acidic food** and **drinks**\")"}
+{"input": "No seafood", "output": "report_success(\"No **seafood**\")"}
+{"input": "Pork is not ok", "output": "report_success(\"**Pork** is not ok\")"}
+{"input": "Avoid carrageenan", "output": "report_success(\"Avoid **carrageenan**\")"}
+{"input": "Vegetarian", "output": "report_success(\"**Vegetarian**\")"}
+{"input": "vitamin b3", "output": "report_success(\"**Vitamin B3**\")"}
+{"input": "Sin lácteos", "output": "report_success(\"**no dairy**\")"}
+{"input": "Do not buy anything from lunchables brand", "output": "report_success(\"Do not buy anything from **lunchables** brand\")"}
+{"input": "Sin gluten", "output": "report_success(\"**no gluten**\")"}
+{"input": "I Do not eat onion or garlic", "output": "report_success(\"I Do not eat **onion** or **garlic**\")"}
+{"input": "No sucralose", "output": "report_success(\"No **sucralose**\")"}
+{"input": "Bobby recommended to avoid seed oils", "output": "report_success(\"Bobby recommended to avoid **seed oils**\")"}
+{"input": "No xanthan gum or guar gum", "output": "report_success(\"No **xanthan gum** or **guar gum**\")"}
+{"input": "avoid gluten", "output": "report_success(\"avoid **gluten**\")"}
+{"input": "Less fat more protein", "output": "report_failure(\"I cannot flag ingredients based on quantity yet.\")"}
+{"input": "I like onions", "output": "report_success(\"I like **onions**\")"}
+{"input": "Alto teor proteico", "output": "report_success(\"**high protein content**\")"}
+{"input": "Vegano", "output": "report_success(\"**vegan**\")"}
+{"input": "Light", "output": "report_failure(\"Incomplete input\")"}
+{"input": "More calcium", "output": "report_success(\"More **calcium**\")"}
+{"input": "Dr berg said avoid maltodextrin because it\u2019s glycemic index is higher than 116", "output": "report_success(\"Dr berg said avoid **maltodextrin** because it\u2019s glycemic index is higher than 116\")"}
+{"input": "I prefer to eat protein food and healthy fat food with oliy food", "output": "report_success(\"I prefer to eat **protein food** and **healthy fat food** with **oily food**\")"}
+{"input": "Hindu vegetarian no eggs", "output": "report_success(\"Hindu **vegetarian** no **eggs**\")"}
+{"input": "I prefer to eat protein food and healthy fat food", "output": "report_success(\"I prefer to eat **protein food** and **healthy fat food**\")"}
+{"input": "No hugs", "output": "report_failure(\"This does not make sense. Please provide a dietary preference. \")"}
+{"input": "I avoid skimmed milk", "output": "report_success(\"I avoid **skimmed milk**\")"}
+{"input": "Rico em antioxidantes", "output": "report_success(\"**rich in antioxidants**\")"}
+{"input": "Should have more than 10 gram of protein", "output": "report_failure(\"I don't understand nutrition information yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "i avoid added sugars in my diet, including refined sugars, high-fructose corn, syrup and artificial sweeteners, to maintain better overall health", "output": "report_success(\"i avoid **added sugars** in my diet, including **refined sugars, high-fructose corn, syrup** and **artificial sweeteners**, to maintain better overall health\")"}
+{"input": "Keine Erdn\u00fcsse", "output": "report_success(\"No **peanuts**\")"}
+{"input": "no milk or eggs", "output": "report_success(\"no **milk** or **eggs**\")"}
+{"input": "I like big butts", "output": "report_failure(\"This does not make sense. Please provide a dietary preference.\")"}
+{"input": "No animal products. dairy and eggs are ok though", "output": "report_success(\"No **animal products**. **dairy** and **eggs** are ok though\")"}
+{"input": "Avoid hydrogenated oils. They can raise cholesterol", "output": "report_success(\"Avoid **hydrogenated oils**. They can raise cholesterol\")"}
+{"input": "Butter should be unsalted", "output": "report_success(\"**Butter** should be **unsalted**\")"}
+{"input": "What's the weather like today?", "output": "report_failure(\"This is not a dietary preference. Please provide a food or cuisine you like.\")"}
+{"input": "I need to book a flight to Paris.", "output": "report_failure(\"I cannot help with travel plans. Please state a dietary preference or a food you enjoy.\")"}
+{"input": "My favorite movie is The Godfather.", "output": "report_failure(\"This is not related to food. Please tell me what kind of food you like to eat.\")"}
+{"input": "How do I change a tire?", "output": "report_failure(\"That is a mechanical question. For restaurant recommendations, I need to know your dietary preferences.\")"}
+{"input": "The capital of France is Paris.", "output": "report_failure(\"That is a geography fact. Please provide a culinary preference instead.\")"}
+{"input": "I am feeling very happy today!", "output": "report_failure(\"I'm glad you're happy! To find you a good restaurant, I need to know what foods you like.\")"}
+{"input": "What is the meaning of life?", "output": "report_failure(\"That is a philosophical question. I specialize in food. Please tell me what you like to eat.\")"}
+{"input": "Play some music by The Beatles.", "output": "report_failure(\"I am not a music player. Please provide a dietary preference so I can suggest food.\")"}
+{"input": "Tell me a joke.", "output": "report_failure(\"I'm here for food recommendations, not comedy. Please tell me your favorite cuisine.\")"}
+{"input": "What time is it?", "output": "report_failure(\"I don't have the ability to tell time. Please provide a dietary preference.\")"}
+{"input": "No pink items", "output": "report_failure(\"I don't understand colors yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "I want blue foods", "output": "report_failure(\"I don't understand colors yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Avoid green ingredients", "output": "report_failure(\"I don't understand colors yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Find red items", "output": "report_failure(\"I don't understand colors yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "No yellow coloring", "output": "report_failure(\"I don't understand colors yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Only teal colored dishes", "output": "report_failure(\"I don't understand colors yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Magenta foods only", "output": "report_failure(\"I don't understand colors yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Avoid cyan ingredients", "output": "report_failure(\"I don't understand colors yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Find maroon items", "output": "report_failure(\"I don't understand colors yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "No lavender colored foods", "output": "report_failure(\"I don't understand colors yet. Please provide a dietary preference that can be mapped to ingredients.\")"}
+{"input": "Allergic to purple fruits", "output": "report_success(\"Allergic to **purple fruits**\")"}
+{"input": "I don't eat brown rice", "output": "report_success(\"I don't eat **brown rice**\")"}
+{"input": "Recipe with green peppers", "output": "report_success(\"Recipe with **green peppers**\")"}
+{"input": "Salad with red onions", "output": "report_success(\"Salad with **red onions**\")"}
+{"input": "I like white rice", "output": "report_success(\"I like **white rice**\")"}
+{"input": "Contains black beans", "output": "report_success(\"Contains **black beans**\")"}
+{"input": "No orange cheese", "output": "report_success(\"No **orange cheese**\")"}
+{"input": "Made with yellow corn", "output": "report_success(\"Made with **yellow corn**\")"}
+{"input": "Uses purple potatoes", "output": "report_success(\"Uses **purple potatoes**\")"}
+{"input": "With green apples", "output": "report_success(\"With **green apples**\")"}
+{"input": "Contains red peppers", "output": "report_success(\"Contains **red peppers**\")"}
+{"input": "Made with brown sugar", "output": "report_success(\"Made with **brown sugar**\")"}
+{"input": "Uses white chocolate", "output": "report_success(\"Uses **white chocolate**\")"}
+{"input": "With black olives", "output": "report_success(\"With **black olives**\")"}
+{"input": "Contains purple cabbage", "output": "report_success(\"Contains **purple cabbage**\")"}
+{"input": "I want yellow squash", "output": "report_success(\"I want **yellow squash**\")"}
+{"input": "No red meat", "output": "report_success(\"No **red meat**\")"}
+{"input": "Contains white beans", "output": "report_success(\"Contains **white beans**\")"}
+{"input": "Made with green tea", "output": "report_success(\"Made with **green tea**\")"}
+{"input": "With black sesame", "output": "report_success(\"With **black sesame**\")"}

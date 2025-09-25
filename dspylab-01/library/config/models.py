@@ -67,6 +67,7 @@ class ProgramConfig(BaseModel):
     dataset_loader: Optional[str] = None
     metrics: Dict[str, str] | None = None
     extras: Dict[str, object] = Field(default_factory=dict)
+    strategy: Optional[str] = None
 
 
 class OutputConfig(BaseModel):

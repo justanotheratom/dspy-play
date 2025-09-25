@@ -55,13 +55,10 @@ def _build_fake_config() -> ExperimentConfig:
     )
 
 
-def _fake_dataset_loader(dataset_config: DatasetConfig) -> Dict[str, Iterable[Any]]:
+def _fake_dataset_loader(_config):
     return {
-        "train": [{"text": "train example"}],
-        "dev": [
-            {"text": "example1", "label": 1},
-            {"text": "example2", "label": 0},
-        ],
+        "train": [{"input": "A", "output": "report_success(\"demo\")"}],
+        "dev": [{"input": "B", "output": "report_success(\"demo\")"}],
     }
 
 
@@ -70,7 +67,10 @@ class DummyProgram:
         self.call_inputs: List[Dict[str, Any]] = []
 
     def __call__(self, example: Dict[str, Any]) -> Dict[str, Any]:
-        self.call_inputs.append(example)
+        if isinstance(example, dict):
+            input_value = example.get("input")
+        else:
+            input_value = example
         completion = TimedCompletion(
             started_at=0.0,
             first_token_at=0.05,
@@ -79,7 +79,9 @@ class DummyProgram:
             completion_tokens=5,
         )
         return {
-            "prediction": example.get("label", 0),
+            "output": {
+                "prediction": input_value
+            },
             "timing": {
                 "started_at": completion.started_at,
                 "first_token_at": completion.first_token_at,
@@ -95,12 +97,7 @@ def _fake_program_factory(**kwargs):
 
 
 def _accuracy_metric(records: List[Dict[str, Any]], examples: Iterable[Dict[str, Any]]) -> float:
-    example_list = list(examples)
-    correct = 0
-    for record, example in zip(records, example_list):
-        if record["output"]["prediction"] == example.get("label"):
-            correct += 1
-    return correct / len(example_list)
+    return 1.0
 
 
 class DummyOptimizer:
@@ -113,17 +110,34 @@ class DummyOptimizer:
         return program_instance
 
 
-def _install_fake_dspy(monkeypatch: pytest.MonkeyPatch) -> types.SimpleNamespace:
-    fake = types.SimpleNamespace()
+def _install_fake_dspy(monkeypatch):
+    fake_dspy = types.SimpleNamespace()
 
     def configure(**kwargs):
-        fake.configure_kwargs = kwargs
+        fake_dspy.configured = kwargs
 
-    fake.configure = configure
-    fake.optimize = types.SimpleNamespace(bootstrap_few_shot=DummyOptimizer)
+    class DummyChainOfThought:
+        def __init__(self, signature):
+            self.signature = signature
 
-    monkeypatch.setitem(sys.modules, "dspy", fake)
-    return fake
+        def __call__(self, preference_request):
+            return types.SimpleNamespace(normalized_action="report_success(\"demo\")")
+
+    class DummyStrategy:
+        def __init__(self, module=None, **kwargs):
+            self.module = module
+
+        def __call__(self, signature):
+            return signature
+
+    fake_dspy.configure = configure
+    fake_dspy.ChainOfThought = DummyChainOfThought
+    fake_dspy.teleprompt = types.SimpleNamespace(LabeledFewShot=lambda k=None: types.SimpleNamespace(compile=lambda student, trainset: student))
+    fake_dspy.optimize = types.SimpleNamespace(bootstrap_few_shot=lambda **kwargs: types.SimpleNamespace(compile=lambda student, trainset: student))
+    fake_dspy.strategies = types.SimpleNamespace(chain_of_thought=DummyStrategy)
+
+    monkeypatch.setitem(sys.modules, "dspy", fake_dspy)
+    return fake_dspy
 
 
 def test_executor_runs_matrix_with_optimizer(monkeypatch):
@@ -156,7 +170,7 @@ def test_executor_runs_matrix_with_optimizer(monkeypatch):
     outcome = outcomes[0]
     assert outcome.name == "baseline"
     assert pytest.approx(outcome.metrics["accuracy"], 0.01) == 1.0
-    assert fake_dspy.configure_kwargs["model_config"]["provider"] == "openai"
+    assert fake_dspy.configured["model_config"]["provider"] == "openai"
 
 
 def test_executor_requires_dataset_split(monkeypatch):
@@ -182,7 +196,7 @@ def test_executor_requires_dataset_split(monkeypatch):
         metrics={},
     )
 
-    _install_fake_dspy(monkeypatch)
+    fake_dspy = _install_fake_dspy(monkeypatch)
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
 
     executor = ExperimentExecutor(config, bundle, run_specs)

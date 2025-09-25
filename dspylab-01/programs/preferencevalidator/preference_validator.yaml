@@ -1,0 +1,42 @@
+experiment_name: preference_validator_groq
+program:
+  module: programs.preferencevalidator.01.program
+  factory: build_program
+  metrics:
+    accuracy: compute_accuracy
+    per_example_match: per_example_match
+models:
+  - id: groq-gpt-oss-20b
+    provider: groq
+    model: groq/openai/gpt-oss-20b
+    api_key_env: GROQ_API_KEY
+    temperature: 0.2
+strategies:
+  - id: chainofthought
+    type: chain_of_thought
+    params:
+      enabled: true
+optimizers:
+  - id: labeledfewshot
+    type: labeled_few_shot
+    params:
+      k: 8
+    metrics:
+      - per_example_match
+matrix:
+  - name: groq_cot_lfs
+    model: groq-gpt-oss-20b
+    optimizer: labeledfewshot
+    strategy: chainofthought
+    metrics:
+      - accuracy
+dataset:
+  source: local
+  path: 01/data/preferencevalidatordataset.jsonl
+outputs:
+  root_dir: programs/preferencevalidator/01/results
+  raw_filename: raw.jsonl
+  summary_filename: summary.json
+logging:
+  level: info
+  verbose: true
