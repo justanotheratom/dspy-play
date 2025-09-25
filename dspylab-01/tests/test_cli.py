@@ -17,6 +17,11 @@ def _install_fake_dspy(monkeypatch: pytest.MonkeyPatch) -> None:
     def configure(**kwargs):
         fake_dspy.configured = kwargs
 
+    class DummyLM:
+        def __init__(self, model, **kwargs):
+            self.model = model
+            self.kwargs = kwargs
+
     class DummyChainOfThought:
         def __init__(self, signature):
             self.signature = signature
@@ -24,14 +29,8 @@ def _install_fake_dspy(monkeypatch: pytest.MonkeyPatch) -> None:
         def __call__(self, preference_request: str):
             return types.SimpleNamespace(normalized_action="report_success(\"demo\")")
 
-    class DummyStrategy:
-        def __init__(self, module=None, **kwargs):
-            self.module = module
-
-        def __call__(self, signature):
-            return signature
-
     fake_dspy.configure = configure
+    fake_dspy.LM = DummyLM
     fake_dspy.ChainOfThought = DummyChainOfThought
     fake_dspy.LabeledFewShot = lambda k=None: types.SimpleNamespace(compile=lambda student, trainset: student)
     fake_dspy.teleprompt = types.SimpleNamespace(LabeledFewShot=lambda k=None: types.SimpleNamespace(compile=lambda student, trainset: student))

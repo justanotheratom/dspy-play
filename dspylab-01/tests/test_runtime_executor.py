@@ -112,6 +112,11 @@ def _install_fake_dspy(monkeypatch):
     def configure(**kwargs):
         fake_dspy.configured = kwargs
 
+    class DummyLM:
+        def __init__(self, model, **kwargs):
+            self.model = model
+            self.kwargs = kwargs
+
     class DummyChainOfThought:
         def __init__(self, signature):
             self.signature = signature
@@ -119,14 +124,8 @@ def _install_fake_dspy(monkeypatch):
         def __call__(self, preference_request):
             return types.SimpleNamespace(normalized_action="report_success(\"demo\")")
 
-    class DummyStrategy:
-        def __init__(self, module=None, **kwargs):
-            self.module = module
-
-        def __call__(self, signature):
-            return signature
-
     fake_dspy.configure = configure
+    fake_dspy.LM = DummyLM
     fake_dspy.ChainOfThought = DummyChainOfThought
     fake_dspy.teleprompt = types.SimpleNamespace(LabeledFewShot=lambda k=None: types.SimpleNamespace(compile=lambda student, trainset: student))
     fake_dspy.optimize = types.SimpleNamespace(bootstrap_few_shot=lambda **kwargs: types.SimpleNamespace(compile=lambda student, trainset: student))
@@ -164,7 +163,7 @@ def test_executor_runs_matrix_with_optimizer(monkeypatch):
     outcome = outcomes[0]
     assert outcome.name == "baseline"
     assert pytest.approx(outcome.metrics["accuracy"], 0.01) == 1.0
-    assert fake_dspy.configured["model_config"]["provider"] == "openai"
+    assert fake_dspy.configured["lm"].model == "gpt-4o"
 
 
 def test_executor_requires_dataset_split(monkeypatch):
