@@ -1,0 +1,26 @@
+[project]
+name = "dspylab"
+version = "0.1.0"
+description = "CLI and configuration toolkit for running DSPy experiments"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "jsonschema>=4.21"
+]
+
+[tool.setuptools.packages.find]
+include = ["library*"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0"
+]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+pythonpath = ["library"]
+
