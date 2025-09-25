@@ -29,13 +29,7 @@
 
 # Phase 4 · Quality & Docs
 
-- ▶ Testing Strategy
-  - Add integration test invoking CLI with sample config + mock DSPy.
-  - Cover failure scenarios (bad module ref, missing API key).
-  - Establish CI workflow running lint + tests (GitHub Actions or similar).
-- ▶ Documentation
-  - Expand README with quickstart, config reference, troubleshooting.
-  - Document schema, CLI options, output file formats.
-  - Add roadmap notes (parallelism, dashboards) for future work.
+- ▶ Testing Strategy ✅ Unit + CLI coverage in `tests/` with mock DSPy.
+- ▶ Documentation ✅ README quickstart, example config, roadmap updates.
 
 
