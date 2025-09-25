@@ -46,9 +46,6 @@ def build_program(
     return module
 
 _TOKEN_PATTERN = re.compile(r"[\w']+")
-COSINE_MATCH_THRESHOLD = 0.9
-
-
 def _stringify_output(value: object) -> str:
     if value is None:
         return ""
@@ -103,17 +100,28 @@ def compute_accuracy(records: List[Dict[str, object]], examples: List[Dict[str, 
     return total_similarity / total if total else 0.0
 
 
-def per_example_match(prediction: Dict[str, object], example: Dict[str, object]) -> bool:
-    """Return True when the cosine similarity exceeds the configured threshold."""
+def metric_cosine_similarity(
+    example: Dict[str, object] | object,
+    prediction: Dict[str, object] | object,
+    trace,
+) -> float:
+    """Return cosine similarity for a single example/prediction pair."""
 
-    predicted = prediction
-    if isinstance(predicted, dict):
-        predicted = predicted.get("output")
-    expected = example.get("output")
+    expected = example
+    if isinstance(expected, dict):
+        expected = expected.get("output")
+    elif hasattr(expected, "output"):
+        expected = getattr(expected, "output")
 
-    predicted_text = _stringify_output(predicted)
+    predicted_output = prediction
+    if isinstance(predicted_output, dict):
+        predicted_output = predicted_output.get("output")
+    elif hasattr(predicted_output, "output"):
+        predicted_output = getattr(predicted_output, "output")
+
     expected_text = _stringify_output(expected)
+    predicted_text = _stringify_output(predicted_output)
 
-    return _cosine_similarity(predicted_text, expected_text) >= COSINE_MATCH_THRESHOLD
+    return _cosine_similarity(predicted_text, expected_text)
 
 

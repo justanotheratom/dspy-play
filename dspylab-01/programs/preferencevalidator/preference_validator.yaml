@@ -4,7 +4,7 @@ program:
   factory: build_program
   metrics:
     accuracy: compute_accuracy
-    per_example_match: per_example_match
+    metric_cosine_similarity: metric_cosine_similarity
   extras:
     input_field: preference_request
     output_field: normalized_action
@@ -20,16 +20,17 @@ optimizers:
     type: labeled_few_shot
     params:
       k: 8
-    metrics:
-      - per_example_match
   - id: bootstrapfewshot
     type: bootstrap_few_shot
     params:
-      max_bootstrapped_demos: 4
-      max_labeled_demos: 16
-      max_rounds: 1
+      max_bootstrapped_demos: 8
+      max_labeled_demos: 24
+      max_rounds: 3
+      metric_threshold: 0.8
+      teacher_settings:
+        temperature: 0.9
     metrics:
-      - accuracy
+      - metric_cosine_similarity
 matrix:
   - name: groq_cot_lfs
     model: groq-gpt-oss-20b

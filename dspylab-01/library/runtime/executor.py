@@ -166,7 +166,15 @@ class ExperimentExecutor:
             return program_instance
 
         optimizer_config = run.optimizer
-        metrics_fns = [self._bundle.metrics[name] for name in self._resolve_metric_names(run) if name in self._bundle.metrics]
+        optimizer_metric_names: Iterable[str] = getattr(optimizer_config, "metrics", []) or []
+        metrics_fns = []
+        for metric_name in optimizer_metric_names:
+            metric_fn = self._bundle.metrics.get(metric_name)
+            if metric_fn is None:
+                raise RuntimeError(
+                    f"Optimizer '{optimizer_config.id}' requested unknown metric '{metric_name}'",
+                )
+            metrics_fns.append(metric_fn)
 
         optimizer = self._instantiate_optimizer(optimizer_config.type, optimizer_config.params)
 
@@ -204,15 +212,34 @@ class ExperimentExecutor:
             LOGGER.info("Compiling program using optimizer '%s'", optimizer_config.id)
             compile_sig = inspect.signature(optimizer.compile)
             kwargs: Dict[str, Any] = {}
+            accepts_metric_param = "metric" in compile_sig.parameters
+            accepts_metrics_param = "metrics" in compile_sig.parameters
             if "trainset" in compile_sig.parameters:
                 kwargs["trainset"] = prepared_trainset
             if "student" in compile_sig.parameters:
                 kwargs["student"] = program_instance
             if metrics_fns:
-                if "metric" in compile_sig.parameters and len(metrics_fns) == 1:
+                if accepts_metric_param and accepts_metrics_param:
+                    if len(metrics_fns) == 1:
+                        kwargs["metric"] = metrics_fns[0]
+                    else:
+                        kwargs["metrics"] = metrics_fns
+                elif accepts_metric_param:
+                    if len(metrics_fns) != 1:
+                        raise RuntimeError(
+                            f"Optimizer '{optimizer_config.id}' accepts a single metric but {len(metrics_fns)} were provided",
+                        )
                     kwargs["metric"] = metrics_fns[0]
-                elif "metrics" in compile_sig.parameters:
+                elif accepts_metrics_param:
                     kwargs["metrics"] = metrics_fns
+                elif hasattr(optimizer, "metric") and len(metrics_fns) == 1:
+                    optimizer.metric = metrics_fns[0]
+                elif hasattr(optimizer, "metrics"):
+                    optimizer.metrics = metrics_fns
+                else:
+                    raise RuntimeError(
+                        f"Optimizer '{optimizer_config.id}' does not accept metrics but metrics were provided",
+                    )
             return optimizer.compile(**kwargs)
 
         raise RuntimeError(f"Optimizer '{optimizer_config.type}' does not support compile()")
