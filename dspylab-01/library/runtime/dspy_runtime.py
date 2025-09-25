@@ -20,11 +20,17 @@ def configure_dspy_runtime(model_config: ModelConfig) -> Dict[str, object]:
 
     provider_settings = _build_provider_settings(model_config)
 
+    model_name = model_config.model
+    if model_config.provider.lower() == "groq":
+        provider_settings.setdefault("base_url", "https://api.groq.com/openai/v1")
+        if not model_name.startswith("groq/"):
+            model_name = f"groq/{model_name}"
+
     lm_class = getattr(dspy, "LM", None)
     if lm_class is None:
         raise DSpyUnavailableError("DSPy >=3.0.3 with dspy.LM is required")
 
-    lm_instance = lm_class(model_config.model, **provider_settings)
+    lm_instance = lm_class(model_name, **provider_settings)
     dspy.configure(lm=lm_instance)
 
     return provider_settings
