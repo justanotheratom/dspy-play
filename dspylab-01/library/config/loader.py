@@ -87,6 +87,20 @@ def dump_example_config(path: Path) -> None:
                 }
             }
         ],
+        "strategies": [
+            {
+                "id": "cot",
+                "type": "chain_of_thought",
+                "params": {"enabled": True}
+            }
+        ],
+        "optimizers": [
+            {
+                "id": "bootstrap",
+                "type": "bootstrap_few_shot",
+                "metrics": ["accuracy"]
+            }
+        ],
         "matrix": [
             {
                 "name": "baseline",
