@@ -103,7 +103,7 @@ def compute_accuracy(records: List[Dict[str, object]], examples: List[Dict[str, 
 def metric_cosine_similarity(
     example: Dict[str, object] | object,
     prediction: Dict[str, object] | object,
-    trace,
+    trace: object | None = None,
 ) -> float:
     """Return cosine similarity for a single example/prediction pair."""
 

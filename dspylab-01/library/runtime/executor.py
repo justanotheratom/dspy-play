@@ -15,7 +15,7 @@ from library.program.loader import ProgramBundle
 
 from library.metrics import LatencyTracker, compute_latency_metrics
 
-from .dspy_runtime import DSpyUnavailableError, configure_dspy_runtime
+from .dspy_runtime import DSpyUnavailableError, configure_dspy_runtime, build_lm_instance
 
 
 LOGGER = logging.getLogger(__name__)
@@ -167,6 +167,8 @@ class ExperimentExecutor:
 
         optimizer_config = run.optimizer
         optimizer_metric_names: Iterable[str] = getattr(optimizer_config, "metrics", []) or []
+        optimizer_params = dict(optimizer_config.params or {})
+        teacher_model_id = optimizer_params.pop("teacher_model", None)
         metrics_fns = []
         for metric_name in optimizer_metric_names:
             metric_fn = self._bundle.metrics.get(metric_name)
@@ -176,7 +178,22 @@ class ExperimentExecutor:
                 )
             metrics_fns.append(metric_fn)
 
-        optimizer = self._instantiate_optimizer(optimizer_config.type, optimizer_config.params)
+        optimizer = self._instantiate_optimizer(optimizer_config.type, optimizer_params, metrics_fns)
+
+        teacher_lm = None
+        if teacher_model_id:
+            try:
+                model_lookup = {model.id: model for model in self._config.models}
+                if teacher_model_id not in model_lookup:
+                    raise RuntimeError(
+                        f"Optimizer '{optimizer_config.id}' requested unknown teacher model '{teacher_model_id}'",
+                    )
+
+                teacher_config = model_lookup[teacher_model_id]
+                lm_instance, _ = build_lm_instance(teacher_config)
+                teacher_lm = lm_instance
+            except Exception as exc:
+                raise RuntimeError(f"Failed to initialize teacher model '{teacher_model_id}': {exc}") from exc
 
         prepared_trainset = []
         for example in train_split:
@@ -185,7 +202,7 @@ class ExperimentExecutor:
             else:
                 raise RuntimeError("Train split examples must be dicts with 'input' and 'output'")
 
-        if optimizer_config.type == "bootstrap_few_shot":
+        if optimizer_config.type in {"bootstrap_few_shot", "bootstrap_few_shot_with_random_search"}:
             try:
                 import dspy  # type: ignore
 
@@ -214,6 +231,14 @@ class ExperimentExecutor:
             kwargs: Dict[str, Any] = {}
             accepts_metric_param = "metric" in compile_sig.parameters
             accepts_metrics_param = "metrics" in compile_sig.parameters
+            if teacher_lm is not None:
+                teacher_settings = getattr(optimizer, "teacher_settings", None)
+                if teacher_settings is None:
+                    teacher_settings = {}
+                else:
+                    teacher_settings = dict(teacher_settings)
+                teacher_settings["lm"] = teacher_lm
+                optimizer.teacher_settings = teacher_settings
             if "trainset" in compile_sig.parameters:
                 kwargs["trainset"] = prepared_trainset
             if "student" in compile_sig.parameters:
@@ -244,7 +269,12 @@ class ExperimentExecutor:
 
         raise RuntimeError(f"Optimizer '{optimizer_config.type}' does not support compile()")
 
-    def _instantiate_optimizer(self, optimizer_type: str, params: Dict[str, Any]):
+    def _instantiate_optimizer(
+        self,
+        optimizer_type: str,
+        params: Dict[str, Any],
+        metrics_fns: Iterable[Any],
+    ):
         try:
             import dspy  # type: ignore
         except ImportError as exc:  # pragma: no cover - exercised in runtime tests
@@ -257,20 +287,44 @@ class ExperimentExecutor:
             camel_name = "".join(part.capitalize() for part in optimizer_type.split("_"))
             if hasattr(teleprompt_module, camel_name):
                 optimizer_cls = getattr(teleprompt_module, camel_name)
-                return optimizer_cls(**init_kwargs)
+                return self._instantiate_with_metrics(optimizer_cls, init_kwargs, metrics_fns)
 
         optimize_module = getattr(dspy, "optimize", None)
         if optimize_module and hasattr(optimize_module, optimizer_type):
             optimizer_cls = getattr(optimize_module, optimizer_type)
-            return optimizer_cls(**init_kwargs)
+            return self._instantiate_with_metrics(optimizer_cls, init_kwargs, metrics_fns)
 
         if optimize_module:
             camel_name = "".join(part.capitalize() for part in optimizer_type.split("_"))
             if hasattr(optimize_module, camel_name):
                 optimizer_cls = getattr(optimize_module, camel_name)
-                return optimizer_cls(**init_kwargs)
+                return self._instantiate_with_metrics(optimizer_cls, init_kwargs, metrics_fns)
 
         raise RuntimeError(f"Optimizer type '{optimizer_type}' not found in dspy")
+
+    def _instantiate_with_metrics(self, optimizer_cls, init_kwargs: Dict[str, Any], metrics_fns: Iterable[Any]):
+        metrics_list = list(metrics_fns or [])
+
+        init_sig = inspect.signature(optimizer_cls.__init__)
+        accepts_metric = "metric" in init_sig.parameters
+        accepts_metrics = "metrics" in init_sig.parameters
+
+        if accepts_metric and accepts_metrics:
+            if metrics_list:
+                if len(metrics_list) == 1:
+                    init_kwargs.setdefault("metric", metrics_list[0])
+                else:
+                    init_kwargs.setdefault("metrics", metrics_list)
+        elif accepts_metric and metrics_list:
+            if len(metrics_list) != 1:
+                raise RuntimeError(
+                    f"Optimizer '{optimizer_cls.__name__}' requires a single metric callable but {len(metrics_list)} were provided",
+                )
+            init_kwargs.setdefault("metric", metrics_list[0])
+        elif accepts_metrics and metrics_list:
+            init_kwargs.setdefault("metrics", metrics_list)
+
+        return optimizer_cls(**init_kwargs)
 
     def _evaluate_program(
         self,

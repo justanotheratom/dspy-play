@@ -28,6 +28,8 @@ export GROQ_API_KEY=sk-your-key  # if you prefer environment variables
 source .venv/bin/activate
 source .env                      # or export GROQ_API_KEY explicitly
 python -m library run programs/preferencevalidator/preference_validator.yaml
+# Or as a one-liner from the repo root:
+# source .venv/bin/activate && python -m library run programs/preferencevalidator/preference_validator.yaml
 ```
 > **Important:** if `GROQ_API_KEY` is not set in the shell, LiteLLM falls back to OpenAI defaults and the run fails with authentication errors.
 

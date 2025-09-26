@@ -14,21 +14,36 @@ models:
     model: openai/gpt-oss-20b
     api_key_env: GROQ_API_KEY
     temperature: 0.2
-    cache: false
+    cache: true
+  - id: groq-llama4-scout-17b
+    provider: groq
+    model: meta-llama/llama-4-scout-17b-16e-instruct
+    api_key_env: GROQ_API_KEY
+    temperature: 0.2
+    cache: true
+  - id: groq-meta-llama-maverick
+    provider: groq
+    model: meta-llama/llama-4-maverick-17b-128e-instruct
+    api_key_env: GROQ_API_KEY
+    temperature: 0.2
+    cache: true
 optimizers:
   - id: labeledfewshot
     type: labeled_few_shot
     params:
       k: 8
   - id: bootstrapfewshot
-    type: bootstrap_few_shot
+    type: bootstrap_few_shot_with_random_search
     params:
       max_bootstrapped_demos: 8
       max_labeled_demos: 24
       max_rounds: 3
+      num_candidate_programs: 8
+      num_threads: 2
       metric_threshold: 0.8
       teacher_settings:
         temperature: 0.9
+      teacher_model: groq-meta-llama-maverick
     metrics:
       - metric_cosine_similarity
 matrix:

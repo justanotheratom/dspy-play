@@ -8,6 +8,8 @@ import time
 import types
 from typing import Dict, Optional
 
+import dspy  # type: ignore
+
 from library.config.models import ModelConfig
 from library.metrics import LatencyTracker
 
@@ -19,16 +21,7 @@ class DSpyUnavailableError(RuntimeError):
     """Raised when DSPy or LiteLLM is unavailable."""
 
 
-def configure_dspy_runtime(
-    model_config: ModelConfig,
-    *,
-    latency_tracker: Optional[LatencyTracker] = None,
-) -> Dict[str, object]:
-    try:
-        import dspy  # type: ignore
-    except ImportError as exc:
-        raise DSpyUnavailableError("DSPy library is required but not installed") from exc
-
+def build_lm_instance(model_config: ModelConfig):
     provider_settings = _build_provider_settings(model_config)
 
     model_name = model_config.model
@@ -45,6 +38,17 @@ def configure_dspy_runtime(
     lm_kwargs["cache"] = model_config.cache
 
     lm_instance = lm_class(model_name, **lm_kwargs)
+
+    return lm_instance, provider_settings
+
+
+def configure_dspy_runtime(
+    model_config: ModelConfig,
+    *,
+    latency_tracker: Optional[LatencyTracker] = None,
+) -> Dict[str, object]:
+    lm_instance, provider_settings = build_lm_instance(model_config)
+
     if latency_tracker is not None:
         _install_latency_hooks(lm_instance, latency_tracker)
 
@@ -198,5 +202,12 @@ def _record_latency_metrics(tracker: LatencyTracker, response: object, elapsed: 
     )
 
     tracker.capture(latency=latency)
+
+
+__all__ = [
+    "configure_dspy_runtime",
+    "build_lm_instance",
+    "DSpyUnavailableError",
+]
 
 
