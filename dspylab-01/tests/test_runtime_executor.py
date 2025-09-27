@@ -25,6 +25,7 @@ def _build_fake_config() -> ExperimentConfig:
             module="programs.preferencevalidator.01.program",
             factory="build_program",
             metrics={"accuracy": "compute_accuracy"},
+            extras={"input_field": "input", "output_field": "output"},
         ),
         models=[
             ModelConfig(
@@ -109,17 +110,34 @@ def _install_fake_dspy(monkeypatch):
         def __call__(self, preference_request):
             return types.SimpleNamespace(normalized_action="report_success(\"demo\")")
 
+    class DummyOptimizer:
+        def __init__(self, **kwargs):
+            self.metric = kwargs.get("metric")
+            self.metrics = kwargs.get("metrics")
+
+        def compile(self, student=None, trainset=None):
+            return student
+
+    class DummyExample:
+        def __init__(self, **kwargs):
+            self.payload = kwargs
+
+        def with_inputs(self, *args, **kwargs):
+            return self
+
     fake_dspy.configure = configure
     fake_dspy.LM = DummyLM
     fake_dspy.ChainOfThought = DummyChainOfThought
     fake_dspy.teleprompt = types.SimpleNamespace(
-        LabeledFewShot=lambda k=None: types.SimpleNamespace(compile=lambda student, trainset: student)
+        LabeledFewShot=lambda k=None: DummyOptimizer(metric=None)
     )
     fake_dspy.optimize = types.SimpleNamespace(
-        bootstrap_few_shot=lambda **kwargs: types.SimpleNamespace(compile=lambda student, trainset: student)
+        bootstrap_few_shot=lambda **kwargs: DummyOptimizer(**kwargs)
     )
+    fake_dspy.Example = DummyExample
 
     monkeypatch.setitem(sys.modules, "dspy", fake_dspy)
+    monkeypatch.setattr("library.runtime.dspy_runtime.dspy", fake_dspy)
     return fake_dspy
 
 

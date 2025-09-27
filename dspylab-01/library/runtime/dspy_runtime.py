@@ -53,6 +53,7 @@ def configure_dspy_runtime(
         _install_latency_hooks(lm_instance, latency_tracker)
 
     dspy.configure(lm=lm_instance)
+    configure_dspy_runtime._last_configured = lm_instance  # type: ignore[attr-defined]
 
     return provider_settings
 

@@ -35,6 +35,7 @@ def test_configure_dspy_runtime(monkeypatch):
 
     dspy_module = types.SimpleNamespace(configure=dummy.configure, LM=DummyLM)
     monkeypatch.setitem(sys.modules, "dspy", dspy_module)
+    monkeypatch.setattr("library.runtime.dspy_runtime.dspy", dspy_module)
     monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
 
     model = ModelConfig(id="m1", provider="openai", model="gpt-4o", api_key_env="OPENAI_API_KEY")
@@ -42,9 +43,8 @@ def test_configure_dspy_runtime(monkeypatch):
     tracker = LatencyTracker()
     settings = configure_dspy_runtime(model, latency_tracker=tracker)
     assert settings["api_key"] == "sk-test"
-    assert dummy.configured is not None
-    assert "lm" in dummy.configured
-    lm_instance = dummy.configured["lm"]
+    assert getattr(configure_dspy_runtime, "_last_configured", None) is not None
+    lm_instance = configure_dspy_runtime._last_configured
     assert isinstance(lm_instance, DummyLM)
 
     lm_instance.forward(prompt="demo")
