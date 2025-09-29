@@ -5,12 +5,45 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, root_validator
+
+
+class PriceRate(BaseModel):
+    usd_per_1m: float = Field(ge=0)
+
+
+class PricingOverride(BaseModel):
+    input: Optional[PriceRate] = None
+    cached_input: Optional[PriceRate] = None
+    output: Optional[PriceRate] = None
+
+
+class PricingReference(BaseModel):
+    pricing_id: str
+    price_version: Optional[int] = Field(default=None, ge=1)
+    override: Optional[PricingOverride] = None
+    fine_tuned: bool = False
+
+
+class LegacyPricing(BaseModel):
+    input_per_1k: Optional[float] = Field(default=None, ge=0)
+    cached_input_per_1k: Optional[float] = Field(default=None, ge=0)
+    output_per_1k: Optional[float] = Field(default=None, ge=0)
 
 
 class Pricing(BaseModel):
-    input_per_1k: Optional[float] = Field(default=None, ge=0)
-    output_per_1k: Optional[float] = Field(default=None, ge=0)
+    reference: Optional[PricingReference] = None
+    legacy: Optional[LegacyPricing] = None
+
+    @root_validator
+    def validate_reference_or_legacy(cls, values):
+        reference = values.get("reference")
+        legacy = values.get("legacy")
+        if not reference and not legacy:
+            raise ValueError("pricing requires either reference or legacy data")
+        if reference and legacy:
+            raise ValueError("pricing cannot define both reference and legacy entries")
+        return values
 
 
 class ModelConfig(BaseModel):
@@ -54,6 +87,15 @@ class ProgramConfig(BaseModel):
     dataset_loader: Optional[str] = None
     metrics: Dict[str, str] | None = None
     extras: Dict[str, object] = Field(default_factory=dict)
+    estimated_calls_per_example: Optional[float] = Field(default=None, ge=0)
+    estimated_training_calls: Optional[float] = Field(default=None, ge=0)
+
+
+class BudgetConfig(BaseModel):
+    max_usd: float = Field(ge=0)
+    warn_usd: Optional[float] = Field(default=None, ge=0)
+    max_train_usd: Optional[float] = Field(default=None, ge=0)
+    max_infer_usd: Optional[float] = Field(default=None, ge=0)
 
 
 class OutputConfig(BaseModel):
@@ -79,6 +121,7 @@ class ExperimentConfig(BaseModel):
     outputs: OutputConfig
     logging: LoggingConfig = LoggingConfig()
     environment: Dict[str, str] | None = None
+    budget: Optional[BudgetConfig] = None
 
 
 @dataclass

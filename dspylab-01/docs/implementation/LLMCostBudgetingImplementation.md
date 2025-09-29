@@ -16,10 +16,10 @@ This plan translates the approved budgeting proposal into actionable engineering
 ## Detailed Work Breakdown
 
 ### 1. Pricing Catalog Infrastructure
-- Create `library/pricing/catalog.yaml` and `library/pricing/__init__.py` with a `PricingCatalog` class supporting:
+- Create `library/pricing/catalog.json` storage and `library/pricing/catalog.py` with a `PricingCatalog` class supporting:
   - Loading/writing YAML entries validated via Pydantic or dataclass models capturing provider, model, tier/variant, `price_version`, `effective_at`, optional `expires_at`, `input_per_1m`, `cached_input_per_1m`, `output_per_1m`, provider-wide fine-tune premiums (`fine_tuned_input_per_1m`, `fine_tuned_output_per_1m`), fine-tune training rates, and optional `notes`.
   - Append-only updates; never mutate historical entries.
-  - Lookup by `(pricing_id or provider/model/variant, timestamp)` returning the most recent effective entry, flagging when pricing is estimated rather than exact, and surfacing provider tier/fine-tune premiums automatically.
+- Lookup by `(pricing_id or provider/model/variant, timestamp)` returning the most recent effective entry, flagging when pricing is estimated rather than exact, and surfacing provider tier/fine-tune premiums automatically.
   - Optional explicit selection by `price_version` plus ability to pin a specific version.
 - Implement file-level locking to avoid concurrent catalog writes.
 - Provide helpers to convert between per-token and per-1M token pricing and to derive per-call estimates.
@@ -98,10 +98,10 @@ This plan translates the approved budgeting proposal into actionable engineering
 
 # Prior Article Implementation Checklist
 
-- [ ] **Phase 0 – Pricing Groundwork**
-  - [ ] Implement pricing catalog module with append-only history, lookup API, fine-tune premium support, estimation flags, and locking.
-  - [ ] Add interactive and environment-variable-driven pricing population workflow (covering fine-tune and training costs) integrated into run startup.
-  - [ ] Update config schema/models to support budgets, pricing IDs, price version pinning, fine-tuned markers, and program call-count metadata; add validation tests and migration guidance.
+- [x] **Phase 0 – Pricing Groundwork**
+  - [x] Implement pricing catalog module with append-only history, lookup API, fine-tune premium support, estimation flags, and locking.
+  - [x] Add interactive and environment-variable-driven pricing population workflow (covering fine-tune and training costs) integrated into run startup.
+  - [x] Update config schema/models to support budgets, pricing IDs, price version pinning, fine-tuned markers, and program call-count metadata; add validation tests and migration guidance.
 
 - [ ] **Phase 1 – Runtime Accounting Core**
   - [ ] Build usage tracker capturing phases, cached tokens, actual vs economic USD, cache detection, and usage warnings; integrate with runtime hooks.

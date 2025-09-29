@@ -39,6 +39,20 @@ This will:
 - Compile the labeled-few-shot optimizer using the dataset in `programs/preferencevalidator/01/data/preferencevalidatordataset.jsonl`
 - Write outputs to `programs/preferencevalidator/01/results/raw.jsonl` and `summary.json`
 
+### Testing
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e '.[dev]'
+pytest
+```
+
+If the virtual environment is already set up, just reactivate and run:
+```bash
+source .venv/bin/activate
+pytest
+```
+
 ### Customize
 1. Duplicate `programs/preferencevalidator` to a new directory.
 2. Update the program code (metrics, strategies, optimizer settings).

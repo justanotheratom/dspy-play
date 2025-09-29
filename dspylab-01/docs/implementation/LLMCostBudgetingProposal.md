@@ -16,7 +16,7 @@
 - We prioritise synchronous Python execution; distributed workers can adopt the same hooks later.
 
 ## Pricing Source of Truth
-- Introduce `library/pricing/catalog.yaml` storing per-1M token rates keyed by provider/model/variant with fields for `input`, `cached_input`, `output`, optional tier identifiers (`batch`, `realtime`, `flex`, etc.), and optional provider-wide fine-tune premiums (`fine_tuned_input_per_1m`, `fine_tuned_output_per_1m`).
+- Introduce `library/pricing/catalog.json` storing per-1M token rates keyed by provider/model/variant with fields for `input`, `cached_input`, `output`, optional tier identifiers (`batch`, `realtime`, `flex`, etc.), and optional provider-wide fine-tune premiums (`fine_tuned_input_per_1m`, `fine_tuned_output_per_1m`).
 - Catalog entries include effective dates and optional expirations so we can audit historical spend after providers change rates; new entries append to history rather than mutating in place.
 - Fine-tuned models reference base-model entries via an inheritance field; they reuse base pricing unless an override is provided or a provider-level premium is specified. Capture fine-tuning *training* prices separately (e.g., per 1K training tokens or per compute-hour) so manifests can report fine-tune job spend alongside inference.
 - Provide a helper `pricing.lookup(model_config, when, *, fine_tuned: bool = False, tier: str | None = None)` that prefers inline `model_config.pricing` but falls back to the catalog (selecting the newest entry whose effective date ≤ run start timestamp). Raise clear errors if nothing matches and record when estimated pricing is used.

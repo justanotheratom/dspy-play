@@ -82,8 +82,9 @@ def dump_example_config(path: Path) -> None:
                 "temperature": 0.3,
                 "max_output_tokens": 512,
                 "pricing": {
-                    "input_per_1k": 0.01,
-                    "output_per_1k": 0.03
+                    "reference": {
+                        "pricing_id": "openai/gpt-4o"
+                    }
                 }
             }
         ],

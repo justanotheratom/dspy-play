@@ -19,6 +19,7 @@ def test_dump_and_load_example_config(tmp_path: Path) -> None:
     assert isinstance(doc, ExperimentDocument)
     assert doc.path == config_path
     assert doc.data["experiment_name"] == "preference_validator_baseline"
+    assert doc.data["models"][0]["pricing"]["reference"]["pricing_id"] == "openai/gpt-4o"
 
 
 def test_missing_config_file(tmp_path: Path) -> None:

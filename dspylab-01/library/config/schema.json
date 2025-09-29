@@ -37,19 +37,61 @@
       },
       "uniqueItems": true
     },
-    "pricing": {
+    "priceRate": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "input_per_1k": {
-          "type": "number",
-          "minimum": 0
-        },
-        "output_per_1k": {
+        "usd_per_1m": {
           "type": "number",
           "minimum": 0
         }
+      },
+      "required": ["usd_per_1m"]
+    },
+    "pricingOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "input": {"$ref": "#/definitions/priceRate"},
+        "cached_input": {"$ref": "#/definitions/priceRate"},
+        "output": {"$ref": "#/definitions/priceRate"}
       }
+    },
+    "pricingReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pricing_id": {"type": "string", "minLength": 1},
+        "price_version": {"type": "integer", "minimum": 1},
+        "override": {"$ref": "#/definitions/pricingOverride"}
+      },
+      "required": ["pricing_id"]
+    },
+    "pricingLegacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "input_per_1k": {"type": "number", "minimum": 0},
+        "cached_input_per_1k": {"type": "number", "minimum": 0},
+        "output_per_1k": {"type": "number", "minimum": 0}
+      }
+    },
+    "pricing": {
+      "anyOf": [
+        {"$ref": "#/definitions/pricingReference"},
+        {"$ref": "#/definitions/pricingLegacy"}
+      ]
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_usd": {"type": "number", "minimum": 0},
+        "warn_usd": {"type": "number", "minimum": 0},
+        "max_train_usd": {"type": "number", "minimum": 0},
+        "max_infer_usd": {"type": "number", "minimum": 0}
+      },
+      "required": ["max_usd"]
     }
   },
   "properties": {
@@ -76,7 +118,9 @@
         "factory": {"type": "string", "minLength": 1},
         "dataset_loader": {"type": "string", "minLength": 1},
         "metrics": {"$ref": "#/definitions/stringMap"},
-        "extras": {"$ref": "#/definitions/params"}
+        "extras": {"$ref": "#/definitions/params"},
+        "estimated_calls_per_example": {"type": "number", "minimum": 0},
+        "estimated_training_calls": {"type": "number", "minimum": 0}
       }
     },
     "models": {
@@ -159,7 +203,8 @@
         "level": {"type": "string", "enum": ["debug", "info", "warning", "error", "critical"]},
         "verbose": {"type": "boolean"}
       }
-    }
+    },
+    "budget": {"$ref": "#/definitions/budget"}
   }
 }
 

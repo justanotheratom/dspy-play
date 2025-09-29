@@ -54,8 +54,8 @@ models:
     temperature: 0.3
     max_output_tokens: 512
     pricing:
-      input_per_1k: 0.01
-      output_per_1k: 0.03
+      reference:
+        pricing_id: openai/gpt-4o
 strategies:
   - id: default_cot
     type: chain_of_thought
