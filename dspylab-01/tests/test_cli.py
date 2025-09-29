@@ -4,6 +4,8 @@ from pathlib import Path
 import sys
 import types
 
+from datetime import datetime, timezone
+
 import pytest
 import yaml
 
@@ -11,9 +13,9 @@ from unittest.mock import patch
 
 from library.cli import run_cli
 from library.config.loader import dump_example_config
+from library.config.models import ExperimentConfig
+from library.pricing.catalog import PricingEntry, PriceRate
 from unittest import mock
-
-from tests.test_runtime_executor import _fake_pricing_entry
 
 
 def _install_fake_dspy(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -112,7 +114,24 @@ def test_cli_validates_config(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -
     _install_fake_dspy(monkeypatch)
     monkeypatch.setenv("OPENAI_API_KEY", "test")
 
-    with patch("library.runtime.executor.ensure_pricing_for_models", return_value=[_fake_pricing_entry()]):
+    pricing_entry = PricingEntry(
+        provider="openai",
+        model="gpt-4o",
+        tier=None,
+        fine_tuned=False,
+        price_version=1,
+        effective_at=datetime(2024, 1, 1, tzinfo=timezone.utc),
+        expires_at=None,
+        input=PriceRate(usd_per_1m=10.0),
+        cached_input=PriceRate(usd_per_1m=1.0),
+        output=PriceRate(usd_per_1m=20.0),
+        training=None,
+        notes=None,
+        pricing_id="openai/gpt-4o",
+        was_estimated=False,
+    )
+
+    with patch("library.runtime.executor.ensure_pricing_for_models", return_value=[pricing_entry]):
         exit_code = run_cli(["run", str(config_path), "--hypothesis", "baseline check"])
     assert exit_code == 0
 
