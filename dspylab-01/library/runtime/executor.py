@@ -14,6 +14,8 @@ from library.config.models import ExperimentConfig, RunSpec
 from library.program.loader import ProgramBundle
 
 from library.metrics import LatencyTracker, compute_latency_metrics
+from library.costs import UsageTracker, BudgetManager, BudgetExceededError, RunPhase
+from library.pricing.manager import ensure_pricing_for_models
 
 from .dspy_runtime import DSpyUnavailableError, configure_dspy_runtime, build_lm_instance
 
@@ -30,6 +32,8 @@ class RunOutcome:
     records: List[Dict[str, Any]]
     optimizer_id: Optional[str] = None
     provider_settings: Dict[str, Any] = field(default_factory=dict)
+    cost_summary: Optional[Dict[str, Any]] = None
+    warnings: List[str] = field(default_factory=list)
 
 
 class ExperimentExecutor:
@@ -62,11 +66,56 @@ class ExperimentExecutor:
         for run in self._runs:
             LOGGER.info("→ Run %s using model '%s'", run.name, run.model.id)
             latency_tracker = LatencyTracker()
-            provider_settings = configure_dspy_runtime(run.model)
+            pricing_entries = ensure_pricing_for_models(models=[run.model], non_interactive=True)
+            pricing_entry = pricing_entries[0]
+            usage_tracker = UsageTracker(pricing_entry)
+            budget_manager = BudgetManager(self._config.budget)
+
+            provider_settings = configure_dspy_runtime(
+                run.model,
+                latency_tracker=latency_tracker,
+                usage_tracker=usage_tracker,
+                budget_manager=budget_manager,
+            )
             program_instance = self._build_program_instance(run)
-            compiled_program = self._maybe_optimize(program_instance, run, train_split)
+
+            if run.optimizer:
+                usage_tracker.set_phase(RunPhase.TRAIN)
+            try:
+                compiled_program = self._maybe_optimize(program_instance, run, train_split)
+            except BudgetExceededError as exc:
+                outcomes.append(
+                    self._build_budget_exceeded_outcome(
+                        run,
+                        records=[],
+                        latency_tracker=latency_tracker,
+                        usage_tracker=usage_tracker,
+                        budget_manager=budget_manager,
+                        provider_settings=provider_settings,
+                        error=exc,
+                    )
+                )
+                continue
+            finally:
+                usage_tracker.set_phase(RunPhase.INFER)
+
             instrumented_program = self._wrap_program_with_latency(compiled_program, latency_tracker)
-            records = self._evaluate_program(instrumented_program, eval_examples)
+            try:
+                records = self._evaluate_program(instrumented_program, eval_examples)
+            except BudgetExceededError as exc:
+                outcomes.append(
+                    self._build_budget_exceeded_outcome(
+                        run,
+                        records=[],
+                        latency_tracker=latency_tracker,
+                        usage_tracker=usage_tracker,
+                        budget_manager=budget_manager,
+                        provider_settings=provider_settings,
+                        error=exc,
+                    )
+                )
+                continue
+
             metrics = self._compute_metrics(run, records, eval_examples, latency_tracker)
 
             outcomes.append(
@@ -76,6 +125,8 @@ class ExperimentExecutor:
                     records=records,
                     optimizer_id=run.optimizer.id if run.optimizer else None,
                     provider_settings=provider_settings,
+                    cost_summary=usage_tracker.summary(),
+                    warnings=usage_tracker.warning_messages() + budget_manager.snapshot.warnings,
                 )
             )
 
@@ -388,6 +439,38 @@ class ExperimentExecutor:
                 return getattr(self._inner, item)
 
         return LatencyLoggingProgram(program)
+
+    def _build_budget_exceeded_outcome(
+        self,
+        run: RunSpec,
+        *,
+        records: List[Dict[str, Any]],
+        latency_tracker: LatencyTracker,
+        usage_tracker: UsageTracker,
+        budget_manager: BudgetManager,
+        provider_settings: Dict[str, Any],
+        error: BudgetExceededError,
+    ) -> RunOutcome:
+        warnings = usage_tracker.warning_messages() + budget_manager.snapshot.warnings
+        warnings.append(str(error))
+
+        metrics = {
+            "budget_exceeded": True,
+            "budget_phase": error.phase.value,
+            "budget_limit_usd": error.budget_limit,
+            "budget_total_spend_usd": error.total_spend,
+        }
+        metrics.update(compute_latency_metrics(latency_tracker.captures))
+
+        return RunOutcome(
+            name=run.name,
+            metrics=metrics,
+            records=records,
+            optimizer_id=run.optimizer.id if run.optimizer else None,
+            provider_settings=provider_settings,
+            cost_summary=usage_tracker.summary(),
+            warnings=warnings,
+        )
 
 
 __all__ = ["ExperimentExecutor", "RunOutcome"]

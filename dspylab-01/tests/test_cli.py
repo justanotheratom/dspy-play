@@ -7,9 +7,13 @@ import types
 import pytest
 import yaml
 
+from unittest.mock import patch
+
 from library.cli import run_cli
 from library.config.loader import dump_example_config
 from unittest import mock
+
+from tests.test_runtime_executor import _fake_pricing_entry
 
 
 def _install_fake_dspy(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -108,7 +112,8 @@ def test_cli_validates_config(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -
     _install_fake_dspy(monkeypatch)
     monkeypatch.setenv("OPENAI_API_KEY", "test")
 
-    exit_code = run_cli(["run", str(config_path), "--hypothesis", "baseline check"])
+    with patch("library.runtime.executor.ensure_pricing_for_models", return_value=[_fake_pricing_entry()]):
+        exit_code = run_cli(["run", str(config_path), "--hypothesis", "baseline check"])
     assert exit_code == 0
 
     data = yaml.safe_load(config_path.read_text())

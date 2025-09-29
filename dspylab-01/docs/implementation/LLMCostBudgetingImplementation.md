@@ -103,9 +103,9 @@ This plan translates the approved budgeting proposal into actionable engineering
   - [x] Add interactive and environment-variable-driven pricing population workflow (covering fine-tune and training costs) integrated into run startup.
   - [x] Update config schema/models to support budgets, pricing IDs, price version pinning, fine-tuned markers, and program call-count metadata; add validation tests and migration guidance.
 
-- [ ] **Phase 1 – Runtime Accounting Core**
-  - [ ] Build usage tracker capturing phases, cached tokens, actual vs economic USD, cache detection, and usage warnings; integrate with runtime hooks.
-  - [ ] Develop budget manager with preflight/post-call enforcement on actual spend, wiring into executor control flow and cancellation handling.
+- [x] **Phase 1 – Runtime Accounting Core**
+  - [x] Build usage tracker capturing phases, cached tokens, actual vs economic USD, cache detection, and usage warnings; integrate with runtime hooks.
+  - [x] Develop budget manager with preflight/post-call enforcement on actual spend, wiring into executor control flow and cancellation handling.
 
 - [ ] **Phase 2 – Reporting & UX**
   - [ ] Extend run outcomes, summary writer, manifest, ledger, and `costs.jsonl` artifact with actual/economic metrics, cache stats, per-million program cost, budget status, and warnings.

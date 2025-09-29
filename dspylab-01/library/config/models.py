@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field, root_validator
+from pydantic import BaseModel, Field, model_validator
 
 
 class PriceRate(BaseModel):
@@ -35,15 +35,13 @@ class Pricing(BaseModel):
     reference: Optional[PricingReference] = None
     legacy: Optional[LegacyPricing] = None
 
-    @root_validator
-    def validate_reference_or_legacy(cls, values):
-        reference = values.get("reference")
-        legacy = values.get("legacy")
-        if not reference and not legacy:
+    @model_validator(mode="after")
+    def validate_reference_or_legacy(self):
+        if not self.reference and not self.legacy:
             raise ValueError("pricing requires either reference or legacy data")
-        if reference and legacy:
+        if self.reference and self.legacy:
             raise ValueError("pricing cannot define both reference and legacy entries")
-        return values
+        return self
 
 
 class ModelConfig(BaseModel):

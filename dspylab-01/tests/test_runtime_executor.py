@@ -16,6 +16,9 @@ from library.config.models import (
 )
 from library.program.loader import ProgramBundle
 from library.runtime.executor import ExperimentExecutor
+from library.pricing.catalog import PricingEntry, PriceRate
+from datetime import datetime, timezone
+from unittest.mock import patch
 
 
 def _build_fake_config() -> ExperimentConfig:
@@ -141,7 +144,27 @@ def _install_fake_dspy(monkeypatch):
     return fake_dspy
 
 
-def test_executor_runs_matrix_with_optimizer(monkeypatch):
+def _fake_pricing_entry() -> PricingEntry:
+    return PricingEntry(
+        provider="openai",
+        model="gpt-4o",
+        tier=None,
+        fine_tuned=False,
+        price_version=1,
+        effective_at=datetime(2024, 1, 1, tzinfo=timezone.utc),
+        expires_at=None,
+        input=PriceRate(usd_per_1m=30.0),
+        cached_input=PriceRate(usd_per_1m=3.0),
+        output=PriceRate(usd_per_1m=60.0),
+        training=None,
+        notes=None,
+        pricing_id="openai/gpt-4o",
+        was_estimated=False,
+    )
+
+
+@patch("library.runtime.executor.ensure_pricing_for_models", return_value=[_fake_pricing_entry()])
+def test_executor_runs_matrix_with_optimizer(mock_pricing, monkeypatch):
     config = _build_fake_config()
     run_specs = [
         RunSpec(
