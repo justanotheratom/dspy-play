@@ -34,6 +34,7 @@ class RunOutcome:
     provider_settings: Dict[str, Any] = field(default_factory=dict)
     cost_summary: Optional[Dict[str, Any]] = None
     warnings: List[str] = field(default_factory=list)
+    cost_events: List[Dict[str, Any]] = field(default_factory=list)
 
 
 class ExperimentExecutor:
@@ -118,6 +119,11 @@ class ExperimentExecutor:
 
             metrics = self._compute_metrics(run, records, eval_examples, latency_tracker)
 
+            program_calls = len(records)
+            cost_summary = usage_tracker.summary(program_calls=program_calls if program_calls else None)
+            cost_summary["program_call_count"] = program_calls
+            warnings = usage_tracker.warning_messages() + budget_manager.snapshot.warnings
+
             outcomes.append(
                 RunOutcome(
                     name=run.name,
@@ -125,8 +131,9 @@ class ExperimentExecutor:
                     records=records,
                     optimizer_id=run.optimizer.id if run.optimizer else None,
                     provider_settings=provider_settings,
-                    cost_summary=usage_tracker.summary(),
-                    warnings=usage_tracker.warning_messages() + budget_manager.snapshot.warnings,
+                    cost_summary=cost_summary,
+                    warnings=warnings,
+                    cost_events=usage_tracker.event_records(),
                 )
             )
 
@@ -462,14 +469,18 @@ class ExperimentExecutor:
         }
         metrics.update(compute_latency_metrics(latency_tracker.captures))
 
+        program_calls = len(records)
+        cost_summary = usage_tracker.summary(program_calls=program_calls if program_calls else None)
+
         return RunOutcome(
             name=run.name,
             metrics=metrics,
             records=records,
             optimizer_id=run.optimizer.id if run.optimizer else None,
             provider_settings=provider_settings,
-            cost_summary=usage_tracker.summary(),
+            cost_summary=cost_summary,
             warnings=warnings,
+            cost_events=usage_tracker.event_records(),
         )
 
 

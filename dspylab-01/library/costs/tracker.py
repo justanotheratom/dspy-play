@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional
@@ -33,6 +35,13 @@ class UsageWarning:
     message: str
     code: str
     phase: RunPhase
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "message": self.message,
+            "code": self.code,
+            "phase": self.phase.value,
+        }
 
 
 @dataclass
@@ -88,6 +97,22 @@ class UsageEvent:
             warnings=warnings,
         )
 
+    def as_record(self) -> Dict[str, Any]:
+        return {
+            "phase": self.phase.value,
+            "prompt_tokens": self.prompt_tokens,
+            "cached_prompt_tokens": self.cached_prompt_tokens,
+            "completion_tokens": self.completion_tokens,
+            "cache_hit": self.cache_hit,
+            "usage_missing": self.usage_missing,
+            "cost": {
+                "actual_usd": self.cost.actual_usd,
+                "economic_usd": self.cost.economic_usd,
+            },
+            "warnings": [warning.to_dict() for warning in self.warnings],
+            "provider_usage": _coerce_provider_usage(self.provider_usage),
+        }
+
 
 @dataclass
 class _PhaseTotals:
@@ -100,6 +125,7 @@ class _PhaseTotals:
     cache_hits: int = 0
 
     def to_dict(self) -> Dict[str, object]:
+        ratio = (self.cache_hits / self.calls) if self.calls else 0.0
         return {
             "actual_usd": self.actual_usd,
             "economic_usd": self.economic_usd,
@@ -108,6 +134,7 @@ class _PhaseTotals:
             "completion_tokens": self.completion_tokens,
             "calls": self.calls,
             "cache_hits": self.cache_hits,
+            "cache_hit_ratio": ratio,
         }
 
 
@@ -203,18 +230,46 @@ class UsageTracker:
     def events(self) -> List[UsageEvent]:
         return list(self._events)
 
-    def summary(self) -> Dict[str, object]:
-        train_totals = self._totals[RunPhase.TRAIN].to_dict()
-        infer_totals = self._totals[RunPhase.INFER].to_dict()
-        return {
+    def event_records(self) -> List[Dict[str, Any]]:
+        return [event.as_record() for event in self._events]
+
+    def summary(self, *, program_calls: Optional[int] = None) -> Dict[str, object]:
+        train_totals = self._totals[RunPhase.TRAIN]
+        infer_totals = self._totals[RunPhase.INFER]
+        total_actual = train_totals.actual_usd + infer_totals.actual_usd
+        total_economic = train_totals.economic_usd + infer_totals.economic_usd
+        total_calls = train_totals.calls + infer_totals.calls
+        total_cache_hits = train_totals.cache_hits + infer_totals.cache_hits
+        cache_hit_ratio = (total_cache_hits / total_calls) if total_calls else 0.0
+        total_events = len(self._events)
+
+        summary: Dict[str, object] = {
             "phases": {
-                RunPhase.TRAIN.value: train_totals,
-                RunPhase.INFER.value: infer_totals,
+                RunPhase.TRAIN.value: train_totals.to_dict(),
+                RunPhase.INFER.value: infer_totals.to_dict(),
             },
-            "actual_usd": train_totals["actual_usd"] + infer_totals["actual_usd"],
-            "economic_usd": train_totals["economic_usd"] + infer_totals["economic_usd"],
-            "events": len(self._events),
+            "totals": {
+                "actual_usd": total_actual,
+                "economic_usd": total_economic,
+                "calls": total_calls,
+                "cache_hits": total_cache_hits,
+                "cache_hit_ratio": cache_hit_ratio,
+                "events": total_events,
+            },
+            "warnings": [warning.to_dict() for warning in self._warnings],
+            "actual_usd": total_actual,
+            "economic_usd": total_economic,
+            "events": total_events,
+            "program_calls": program_calls if program_calls is not None else total_events,
         }
+
+        call_scale = program_calls if program_calls else total_events
+        if call_scale:
+            multiplier = TOKENS_PER_MILLION / call_scale
+            summary["program_cost_per_million_runs"] = total_actual * multiplier
+            summary["program_economic_cost_per_million_runs"] = total_economic * multiplier
+
+        return summary
 
 
 def _calculate_costs(
@@ -283,3 +338,21 @@ def _calculate_costs(
 
 def _usd(tokens: int, rate: PriceRate) -> float:
     return (tokens / TOKENS_PER_MILLION) * float(rate.usd_per_1m)
+
+
+def _coerce_provider_usage(usage: Any) -> Any:
+    if usage is None:
+        return None
+    if isinstance(usage, dict):
+        try:
+            json.dumps(usage)
+            return usage
+        except Exception:  # pragma: no cover - defensive
+            return {key: str(value) for key, value in usage.items()}
+    if hasattr(usage, "__dict__"):
+        return {key: _coerce_provider_usage(value) for key, value in vars(usage).items()}
+    try:
+        json.dumps(usage)
+        return usage
+    except Exception:  # pragma: no cover - defensive
+        return repr(usage)

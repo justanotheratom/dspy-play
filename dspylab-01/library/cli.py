@@ -7,7 +7,7 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable, List, Dict, Any
 import traceback
 import uuid
 
@@ -184,6 +184,19 @@ def _finalize_run(
     aggregated_raw: List[dict] = []
     aggregated_summary: List[dict] = []
     sub_run_entries: List[dict] = []
+    aggregated_cost_events: List[dict] = []
+
+    overall_costs = {
+        "actual_usd": 0.0,
+        "economic_usd": 0.0,
+        "calls": 0,
+        "cache_hits": 0,
+        "events": 0,
+    }
+    overall_phases: Dict[str, Dict[str, float]] = {}
+    overall_program_calls = 0
+    aggregated_warning_messages: List[str] = []
+    aggregated_warning_details: List[Dict[str, Any]] = []
 
     for index, run_spec in enumerate(runs):
         slug = _slugify(run_spec.name)
@@ -218,6 +231,13 @@ def _finalize_run(
             metrics_file = sub_run_path / "metrics.json"
             metrics_file.write_text(json.dumps(outcome.metrics, indent=2), encoding="utf-8")
 
+            cost_events = outcome.cost_events or []
+            costs_file = sub_run_path / "costs.jsonl"
+            if cost_events:
+                costs_file.write_text("\n".join(json.dumps(event) for event in cost_events), encoding="utf-8")
+            else:
+                costs_file.write_text("", encoding="utf-8")
+
             entry.update(
                 {
                     "status": "completed",
@@ -226,9 +246,14 @@ def _finalize_run(
                     "paths": {
                         "raw": str(raw_file.relative_to(run_path)),
                         "metrics": str(metrics_file.relative_to(run_path)),
+                        "costs": str(costs_file.relative_to(run_path)),
                     },
                 }
             )
+
+            cost_summary = outcome.cost_summary or {}
+            entry["cost_summary"] = cost_summary
+            entry["warnings"] = outcome.warnings
 
             aggregated_summary.append(
                 {
@@ -236,7 +261,51 @@ def _finalize_run(
                     "metrics": outcome.metrics,
                     "optimizer": outcome.optimizer_id,
                     "model": run_spec.model.id,
+                    "cost_summary": cost_summary,
+                    "warnings": outcome.warnings,
                 }
+            )
+
+            for event in cost_events:
+                enriched_event = dict(event)
+                enriched_event["run"] = outcome.name
+                aggregated_cost_events.append(enriched_event)
+
+            totals = cost_summary.get("totals") or {}
+            overall_costs["actual_usd"] += float(totals.get("actual_usd", cost_summary.get("actual_usd", 0.0)))
+            overall_costs["economic_usd"] += float(totals.get("economic_usd", cost_summary.get("economic_usd", 0.0)))
+            overall_costs["calls"] += int(totals.get("calls", 0))
+            overall_costs["cache_hits"] += int(totals.get("cache_hits", 0))
+            overall_costs["events"] += int(totals.get("events", cost_summary.get("events", 0)))
+
+            phases = cost_summary.get("phases", {})
+            for phase_name, phase_values in phases.items():
+                accumulator = overall_phases.setdefault(
+                    phase_name,
+                    {
+                        "actual_usd": 0.0,
+                        "economic_usd": 0.0,
+                        "prompt_tokens": 0,
+                        "cached_prompt_tokens": 0,
+                        "completion_tokens": 0,
+                        "calls": 0,
+                        "cache_hits": 0,
+                    },
+                )
+                accumulator["actual_usd"] += float(phase_values.get("actual_usd", 0.0))
+                accumulator["economic_usd"] += float(phase_values.get("economic_usd", 0.0))
+                accumulator["prompt_tokens"] += int(phase_values.get("prompt_tokens", 0))
+                accumulator["cached_prompt_tokens"] += int(phase_values.get("cached_prompt_tokens", 0))
+                accumulator["completion_tokens"] += int(phase_values.get("completion_tokens", 0))
+                accumulator["calls"] += int(phase_values.get("calls", 0))
+                accumulator["cache_hits"] += int(phase_values.get("cache_hits", 0))
+
+            aggregated_warning_messages.extend(outcome.warnings)
+            aggregated_warning_details.extend(cost_summary.get("warnings", []))
+            overall_program_calls += int(
+                cost_summary.get("program_call_count")
+                or cost_summary.get("program_calls")
+                or 0
             )
         else:
             entry["status"] = "skipped"
@@ -245,9 +314,27 @@ def _finalize_run(
 
     aggregated_raw_path = run_path / outputs.raw_filename
     aggregated_summary_path = run_path / outputs.summary_filename
+    aggregated_costs_path = run_path / "costs.jsonl"
 
     aggregated_raw_path.write_text("\n".join(json.dumps(r) for r in aggregated_raw), encoding="utf-8")
     aggregated_summary_path.write_text(json.dumps(aggregated_summary, indent=2), encoding="utf-8")
+    if aggregated_cost_events:
+        aggregated_costs_path.write_text("\n".join(json.dumps(event) for event in aggregated_cost_events), encoding="utf-8")
+    else:
+        aggregated_costs_path.write_text("", encoding="utf-8")
+
+    for phase_name, phase_values in overall_phases.items():
+        calls = phase_values.get("calls", 0)
+        cache_hits = phase_values.get("cache_hits", 0)
+        phase_values["cache_hit_ratio"] = (cache_hits / calls) if calls else 0.0
+
+    program_calls_denominator = overall_program_calls or overall_costs["events"]
+    program_cost_per_million = None
+    program_economic_cost_per_million = None
+    if program_calls_denominator:
+        multiplier = 1_000_000 / program_calls_denominator
+        program_cost_per_million = overall_costs["actual_usd"] * multiplier
+        program_economic_cost_per_million = overall_costs["economic_usd"] * multiplier
 
     manifest = {
         "run_id": run_id,
@@ -261,8 +348,21 @@ def _finalize_run(
             "root": str(run_path),
             "aggregated_raw": str(aggregated_raw_path.relative_to(run_path)),
             "aggregated_summary": str(aggregated_summary_path.relative_to(run_path)),
+            "aggregated_costs": str(aggregated_costs_path.relative_to(run_path)),
         },
         "sub_runs": sub_run_entries,
+        "costs": {
+            "totals": overall_costs,
+            "phases": overall_phases,
+            "program_calls": program_calls_denominator,
+            "program_cost_per_million_runs": program_cost_per_million,
+            "program_economic_cost_per_million_runs": program_economic_cost_per_million,
+            "warning_messages": aggregated_warning_messages,
+            "warning_details": aggregated_warning_details,
+            "paths": {
+                "costs_jsonl": str(aggregated_costs_path.relative_to(run_path)),
+            },
+        },
     }
 
     if error_text:
@@ -280,6 +380,8 @@ def _finalize_run(
         "started_at": started_at.isoformat(),
         "finished_at": finished_at.isoformat(),
         "manifest": str(manifest_path.relative_to(root)),
+        "cost_actual_usd": overall_costs["actual_usd"],
+        "cost_economic_usd": overall_costs["economic_usd"],
     }
 
     ledger_path = root / "ledger.jsonl"
