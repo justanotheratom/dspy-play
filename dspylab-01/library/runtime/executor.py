@@ -139,6 +139,22 @@ class ExperimentExecutor:
 
         return outcomes
 
+    def summarize_dataset(self) -> Dict[str, Any]:
+        dataset = self._get_dataset_splits()
+        train_split = list(dataset.get("train") or [])
+        eval_split = dataset.get("dev") or dataset.get("test") or []
+        eval_examples = list(eval_split)
+
+        train_prompt_tokens_total = sum(_approx_prompt_tokens(example) for example in train_split)
+        eval_prompt_tokens_total = sum(_approx_prompt_tokens(example) for example in eval_examples)
+
+        return {
+            "train_count": len(train_split),
+            "eval_count": len(eval_examples),
+            "train_prompt_tokens_total": train_prompt_tokens_total,
+            "eval_prompt_tokens_total": eval_prompt_tokens_total,
+        }
+
     def _get_dataset_splits(self) -> Dict[str, Iterable[Any]]:
         if self._dataset_cache is not None:
             return self._dataset_cache

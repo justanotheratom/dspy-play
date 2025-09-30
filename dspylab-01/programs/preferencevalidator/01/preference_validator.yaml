@@ -8,6 +8,8 @@ program:
   extras:
     input_field: preference_request
     output_field: normalized_action
+  estimated_calls_per_example: 2.0
+  estimated_training_calls: 8.0
 models:
   - id: groq-gpt-oss-20b
     provider: groq
